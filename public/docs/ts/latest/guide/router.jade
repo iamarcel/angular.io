@@ -1,9 +1,1226 @@
 include ../../../../_includes/_util-fns
 
 :marked
-  # App Navigation with the Router
-  It's coming soon!
+  In most applications, users navigate from one [view](./glossary.html#view) to the next
+  as they perform application tasks.
+  
+  The browser is a familiar model of application navigation. 
+  We enter a URL in the address bar and the browser navigates to a corresponding page.
+  We click links on the page and the browser navigates to a new page. 
+  We click the browser's back and forward buttons and the browser navigates
+  backward and forward through the history of pages we've seen.
+  
+  The Angular "**Component Router**" (AKA "the router") borrows from this model. 
+  It can interpret a browser URL as an instruction
+  to navigate to a client-generated view and pass optional parameters along to the supporting view component
+  to help it decide what specific content to present. 
+  We can bind the router to links on a page and it will navigate to 
+  the appropriate application view when the user clicks a link. 
+  We can navigate imperatively when the user clicks a button, selects from a drop box,
+  or in response to some other stimulus from any source. And the router logs activity
+  in the browser's history journal so the back and forward buttons work as well.
+  
+.l-main-section
+:marked
+  ## The Basics
+  Let's learn a few core concepts of the Component Router. Then we can explore the details through an example.
+  
+  The **`Router`** is a service that presents the appropriate Component view for a given URL. 
+  When the browser's URL changes, the router looks for a corresponding **`RouteDefinition`**
+  from which it can determine the Component to display.
+
+  A new router has no route definitions. We have to configure it.
+  The preferred way to configure the router is with a **`@RouteConfig`** [decorator](glossary.html#decorator)
+  applied to a host component.
+
+  In this example, we configure the `AppComponent` with three route definitions
++makeExample('router/ts/src/app/app.component.2.ts', 'route-config')
+:marked
+
+.l-sub-section
+ :marked
+   There are several flavors of `RouteDefinition`. 
+   The most common by far is the named **`Route`** which maps a URL path to a Component
+   
+   The `name` field is the name of the `Route`. The name must be spelled in Title case.
+    
+   The `:id` in the third route is a token for a route parameter. In a URL such as `/hero/42`, "42"
+   is the value of the `id` parameter. The corresponding `HeroDetailComponent`
+   will use that value to find and present the hero whose `id` is 42. 
+   We'll learn more about route parameters later in this chapter.
+:marked
+  Now we know how the router gets its configuration.
+  When the browser URL for this application becomes `/heroes`,
+  the router finds the `RouteDefintion` named "Heroes" and then knows to display the `HeroListComponent`.
+  
+  Display it where? It will display in a **`RouterOutlet`** that we've placed in the host view's HTML.
+  ```html
+  <!-- Routed views go here -->
+  <router-outlet></router-outlet>
+  ```
+  Now we have routes configured and a place to render them, but
+  how do we navigate? The URL could arrive directly from the browser address bar. 
+  But most of the time we navigate as a result of some user action such as the click of
+  an anchor tag. 
+  
+  In an anchor tag we bind a **`RouterLink`** Directive to a template expression that 
+  returns an **array of link parameters**. The router ultimately resolves that array
+  into a URL and a component view.
+  
+  We see such bindings in the following `AppComponent` template:
++makeExample('router/ts/src/app/app.component.1.ts', 'template')
+.l-sub-section
+ :marked
+   We're adding two anchor tags with `RouterLink` directives.
+   We bind each `RouterLink` to an array containing the string name of a route definition.
+   'Crisis Center' and 'Heroes' are the names of the `Routes` we configured above.
+
+   We'll learn to write more complex link expressions ... and why they are arrays ... later in the chapter.
+:marked
+  Let's summarize:
+table
+  tr
+    th Router Part
+    th Meaning
+  tr
+    td <code>Router</code>
+    td.
+      Displays the application component for the active URL. 
+      Manages navigation from one component to the next.
+  tr
+    td <code>@RouteConfig</code>
+    td.
+      Configures a router with <code>RouteDefinitions</code>, each mapping a URL path to a Component.
+  tr
+    td <code>RouteDefinition</code>
+    td.
+      Defines how the router should navigate to a Component based on a URL pattern.
+  tr
+    td <code>Route</code>
+    td.
+      The most common form of <code>RouteDefinition</code> consisting of a path, a route name,
+      and a component type.
+  tr
+    td <code>RouterOutlet</code>
+    td.
+      The directive (<code>&lt;router-outlet></code>) that marks where the router should display a view.
+  tr
+    td <code>RouterLink</code>
+    td.
+      The directive for binding a clickable HTML element to
+      a route. Clicking an anchor tag with a <code>&lt;router-link></code> directive
+      that is bound to a <i>Link Parameters Array</i> triggers a navigation.
+  tr
+    td <i>Link Parameters Array</i></code>
+    td.
+      An array that the router inteprets into a routing instruction.  
+      We can bind a <code>RouterLink</code> to that array or pass the array as an argument to
+      the <code>Router.navigate</code> method.
+:marked
+  We'll learn many more details in this chapter which covers
+  
+  * configuring a router
+  * the link parameter arrays that propel router navigation
+  * navigating when the user clicks a data-bound link
+  * navigating under program control
+  * passing information in route parameters
+  * creating a child router with its own routes
+  * creating an "auxiliary route" for view outside the navigation tree
+  * asking the user's permission to leave before navigating to a new view using lifecycle events
+  * how to switch from the HTML 5 style browser URLs to hash (#) URLs 
+ 
+.callout.is-helpful
+  header Prior Knowledge
+  :marked
+    We assume that you're already comfortable with the basic Angular 2 concepts and tools
+    we introduced in the [QuickStart](../quickstart.html) and
+    the [Tour of Heroes](../tutorial/) tutorial.
+:marked
+
+.callout.is-critical
+  header Route Link Syntax - Note to self
+  :marked
+    The tutorial approach won't be the best way to fully describe the link parameters array.
+    
+    Create an appendix on route link syntax ... how the array is interpreted ... and
+    link to it at the appropriate time.
 
 .l-main-section
 :marked
-  ## What's not to love?
+  ## The Sample Application
+  Our customer is the Hero Employment Agency. 
+  Heroes need work and The Agency finds Crises for them to solve.
+  
+  The application has several feature areas with different workflows:
+  1. A "Crisis Center" where we maintain the list of crises for assignment to heroes. 
+  1. A "Heroes" area where we maintain the list of heroes employed by The Agency.
+  1. A "Chat" area where a user can talk to a 'live' agent for support.
+
+  Start by clicking the "Heroes" link. We're presented with a list of Heroes.
+figure.image-display
+  img(src='/resources/images/devguide/router/hero-list.png' alt="Hero List" width="250")
+:marked
+  We select one and the applications takes us to a hero editing screen.
+figure.image-display
+  img(src='/resources/images/devguide/router/hero-detail.png' alt="Crisis Center Detail" width="250")
+:marked
+  Our changes take affect immediately. We click the "Back" button and the
+  app returns us to the Heroes list.
+  
+  We could have clicked the browser's back button instead. 
+  That would have returned us to the Heroes List as well.
+  Angular app navigation updates the browser history as normal web navigation does.
+  
+  Now click the "Crisis Center" link. We go to the "Crisis Center" and its list of ongoing crises.
+figure.image-display
+  img(src='/resources/images/devguide/router/crisis-center-list.png' alt="Crisis Center List" width="300")
+:marked
+  We select one and the applications takes us to a crisis editing screen.
+figure.image-display
+  img(src='/resources/images/devguide/router/crisis-center-detail.png' alt="Crisis Center Detail" width="250")
+:marked
+   This is a bit different then the "Heroes Detail". We have two buttons, "Save" and "Cancel".
+   If we make a change and click "Save", we return to the "Crisis Center" and see our changes
+   reflected in the list. If we make a change and click "Cancel", 
+   we return to the "Crisis Center" but this time our changes were discarded.
+   
+   Now we click a crisis, make a change, and ***do not click either button***.
+   We click the browser back button instead. Up pops a modal dialog box.
+figure.image-display
+  img(src='/resources/images/devguide/router/confirm-dialog.png' alt="Confirm Dialog" width="300")
+:marked
+  We can say "OK" and lose our changes or click "Cancel" and continue editing.
+  
+  The router supports a `CanDeactivate` lifecycle" method that gives us a chance to clean-up
+  or ask the user's permission before navigating away from the current view.
+  
+  Lastly, we click the "Chat" link and up pops a chat window in which we can speak
+  with an agent. This chat window sits outside of the rest of the content. The 'agent'
+  is not real, and randomly replies to all messages from a preset list.
+figure.image-display
+  img(src='/resources/images/devguide/router/chat-empty.png' alt="Chat" )
+:marked
+  The chat view is its own view, independent of the other component views.
+  We navigated to it via an "auxiliary route".
+  
+  Let's see a quick demonstration of the workflow in action.
+<a id="full-app-demo"></a>  
+figure.image-display
+  img(src='/resources/images/devguide/router/router-anim.gif' alt="App in action" )
+:marked
+  Here's a diagram of all application routing options:
+figure.image-display
+  img(src='/resources/images/devguide/router/complete-nav.png' alt="Navigation diagram" )
+:marked
+  This app illustrates the router features we'll cover in this chapter
+  
+  * navigating to a component ("Heroes" link to "Heroes List")
+  * including a route parameter (passing the Hero `id` while routing to the "Hero Detail")
+  * child routes (the "Crisis Center" has its own routes)
+  * the `CanLeave` lifecycle method (ask before discarding changes)
+  * navigating an auxiliary route (opening the chat window).
+  
+  We've included the [complete source below](#final-app).
+
+<a id="getting-started"></a>
+.l-main-section
+:marked
+  ## Milestone #1: Getting Started with the Router
+  
+  This chapter is supported by a working sample application.
+  We *could* start from scratch, beginning with the setup in the [QuickStart](../quickstart.html),
+  and walk every step of the way to the complete solution.
+  
+  We won't do that. It would take too long and distract from our focus on routing.
+.l-sub-section
+  :marked
+    You can do that yourself if you wish. All the code is here, including the [final application code](#final-app). 
+:marked
+  Instead, we'll cherry pick the code fragments and files that are most revealing
+  and display a full code summary at the end of each milestone.
+  
+  Let's begin with a simple version of the app that navigates between two empty views.
+figure.image-display
+  img(src='/resources/images/devguide/router/router-1-anim.gif' alt="App in action" )
+:marked
+  ### Load the Component Router library
+  The Component Router is not part of the Angular 2 core. It is its own library.
+  The router is an optional service and you might prefer a different router someday.
+  
+  The Component Router library is part of the Angular npm bundle.
+  We make it available by loading its script in our `index.html`, right after
+  the Angular core script.
++makeExample(`router/ts/src/index.html`,'router-lib')(format=".")
+:marked
+  ### Set the *&lt;base href>*
+  The Component Router uses the browser's 
+  [history.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History_API#Adding_and_modifying_history_entries) 
+  for navigation. Thanks to `pushState`, we can make our in-app URL paths look the way we want them to
+  look, e.g. `localhost:3000/crisis-center`. Our in-app URLs can be indistinguishable from server URLs.
+
+  Modern HTML 5 browsers for the first to support `pushState` which is why many people refer to these URLs as
+  "HTML 5 style" URLs.
+
+  We must **add a [&lt;base href> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base) tag** 
+  to the `index.html` to make this work.
+  The `href` value specifies the base URL to use for all *relative* URLs within a document including 
+  links to css files, scripts, and images.
+
+  Add the base element just after the  `<head>` tag. 
+  If the `src` folder is the application root, as it is for our application,
+  set the `href` value *exactly* as shown here. 
+
++makeExample(`router/ts/src/index.html`,'base-href')(format=".")
+.l-sub-section
+  :marked
+    "HTML 5" style navigation is the Component Router default `LocationStrategy`. The router calls it the `PathLocationStrategy`.
+    
+    We *can* switch to the older, "hash (#)" style that we used to see before browsers supported `history.pushState`
+    Angular calls this the `HashLocationStrategy`.
+    
+    Learn why "HTML 5" style is preferred, how to adjust its behavior, and how to switch to the `HashLocationStrategy`
+    if necessary in the [Browser URL Styles](#browser-url-styles) appendix below. 
+    We'll also suggest what to do if you cannot add the `<base href>` to the host web page.
+:marked
+  ### Booting with the router
+  Our app launches from the `boot.ts` file in the `~/src/app` folder so let's start there. 
+  It's short and all of it is relevant to routing.
++makeExample(`router/ts/src/app/boot.1.ts`,'all', 'boot.ts')
+:marked
+  We import our root `AppComponent` and Angular's `bootstrap` function as expected.
+  
+  We also import `ROUTER_PROVIDERS` from Dependency Injection.
+  The router is a service implemented by a collection of providers, most of which are identified in the
+  `ROUTER_PROVIDERS` array.
+  
+  As usual, we're booting Angular with `AppComponent` as our app's root component and 
+  registering providers in an array in the second parameter of the `bootstrap` function. 
+  Providing the router providers at the root makes the router available everywhere in our application.
+.l-sub-section
+  :marked
+    Learn about providers, the `provide` function, and injected services in the 
+    [Dependency Injection chapter](dependency-injection.html).
+:marked
+  ### The *AppComponent* shell
+  The root `AppComponent` is the shell of our application. It has title at the top, a navigation bar with two links,
+  and a "router outlet" below where the router swaps views on and off the page. Here's what we mean:
+figure.image-display
+  img(src='/resources/images/devguide/router/shell-and-outlet.png' alt="Shell" width="300" )
+:marked
+  <a id="shell-template"></a>
+  The corresponding component template looks like this:
++makeExample(`router/ts/src/app/app.component.1.ts`,'template')
+:marked
+  ### *RouterOutlet* 
+  `RouterOutlet` is a component from the router library.
+  The router displays views within the bounds of the `<router-outlet>` tags. 
+
+.l-sub-section
+  :marked
+    A template may hold exactly one ***unnamed*** `<router-outlet>`. 
+    
+    It could have multiple ***named*** outlets (e.g., `<router-outlet name="chat">`). 
+    We'll learn about them when we get to "auxiliary routes".
+:marked
+  ### *RouterLink* binding
+  Above the outlet, within the anchor tags, we see [Property Bindings](template-syntax.html#property-binding) to
+  the `RouterLink` Directive that look like `[router-link]="[...]"`. We imported `RouterLink` from the router library.
+  
+  The template expression to the right of the equals (=) returns an *array of link parameters*.
+  
+  The arrays in this example each have a single string parameter, the name of a `Route` that
+  we'll configure for this application with `@RouteConfig()`.
+  
+  ### *@RouteConfig()*
+  A router holds a list of route definitions. The list is empty for a new router. We must configure it.
+  
+  A router also needs a **Host Component**, a point of origin for its navigations.
+  
+  It's natural to combine the creation of a new router, its configuration, and its assignment to a host component 
+  in a single step. That's the purpose of the `@RouteConfig` decorator which we put to good use here:
++makeExample(`router/ts/src/app/app.component.1.ts`,'route-config')
+:marked
+  The `@RouteConfig` decorator creates a new router. 
+  We applied the decorator to `AppComponent` which makes that the router's host component.
+  The argument to `@RouteConfig()` is an array of **Route Definitions**.
+  
+  We're supplying two defintions:
++makeExample(`router/ts/src/app/app.component.1.ts`,'route-defs')
+:marked
+  Each definition translates to a [Route](https://angular.io/docs/ts/latest/api/router/Route-class.html) which has a
+  * `path` - the URL path segment for this route
+  * `name` - the name of the route
+  * `component` - the Component associated with this route.
+  
+.l-sub-section
+  :marked
+    The router library has a [`RouteDefinition`](https://angular.io/docs/ts/latest/api/router/RouteDefinition-interface.html)
+    interface that defines eight or so optional properties.
+    
+    Several route classes implement this interface including 
+    [Route](https://angular.io/docs/ts/latest/api/router/Route-class.html), 
+    [AsyncRoute](https://angular.io/docs/ts/latest/api/router/AsyncRoute-class.html), 
+    [AuxRoute](https://angular.io/docs/ts/latest/api/router/AuxRoute-class.html), and 
+    [Redirect](https://angular.io/docs/ts/latest/api/router/Redirect-class.html).
+    
+    Each class specialized in a particular form of route definition.
+    
+    In this case, we're supplying object literals that could specify any of the interface properties. The `RouteConfig`
+    function translates each object literal into one of the route classes ... 
+    or throws an error if it can't make sense of that object.
+:marked
+  The router draws upon its registry of route definition when responding to brower URL changes and navigation requests. 
+  We're talking about two different ways to navigate to a component view:
+  1. when the browser URL changes
+  2. when we give the router a named route
+  
+  Translating these two definitions into English, we might say:
+  > *When the browser's location URL changes to **match the path** segment `/crisis-center`, create or retrieve an instance of 
+  the `CrisisCenterComponent` and display its view.*
+  >
+  > *When the application requests navigation to a route **named** `CrisisCenter`, compose a browser URL
+  with the path segment `/crisis-center`, update the browser's address location and history, create or retrieve an instance of 
+  the `CrisisCenterComponent`, and display that component's view.*
+
+  ### "Getting Started" wrap-up
+  
+  Congratulations! We've got a very basic, navigating app, one that can switch between two views
+  when the user clicks a link.
+  
+  We've learned how to
+  * load the router library
+  * add a nav bar to the shell template with anchor tags and `router-link` directives
+  * added a `router-outlet` to the shell template where views will be displayed
+  * configure the router with `@RouterConfig`
+  * set the router to compose "HTML 5" browser URLs.
+  
+  The rest of the starter app is mundane, with little interest from a router perspective.
+  Here are the details for readers inclined to build the sample through this milestone.
+  
+  Our starter app's structure looks like this:
+  ```
+  router-sample
+  ├── node_modules/
+  ├── src/
+  │    ├── app/
+  │    |    ├── app.component.ts
+  |    │    ├── boot.ts
+  |    │    ├── crisis-list.component.ts
+  |    │    └── hero-list.component.ts
+  │    ├── index.html
+  │    ├── styles.css
+  │    └── tsconfig.json
+  └──package.json
+  ```
+  Here are the application-specific files
++makeTabs(
+  `router/ts/src/app/app.component.1.ts,
+   router/ts/src/app/boot.1.ts,
+   router/ts/src/app/hero-list.component.ts, 
+   router/ts/src/app/crisis-list.component.ts,
+   router/ts/src/styles.css`,
+  `,all,,,starter`, 
+  `app.component.ts, boot.ts,hero-list.component.ts,crisis-list.component.ts, styles.css`)
+:marked
+
+<a id="heroes-feature"></a>
+.l-main-section
+:marked
+  ## Milestone #2: The Heroes Feature
+  
+  We've seen how to navigate with using the `RouterLink` Directive to individual components.
+  
+  Now we'll learn some new tricks such as how to
+  * organize our app into "feature areas"
+  * navigate imperatively from one component to another
+  * pass information along in route parameters (`RouteParams`)
+  
+  To demonstrate all of this we'll build out the "Heroes" feature.
+  
+  ### The Heroes "feature area"
+  
+  A typical application has multiple "feature areas", each an island of functionality
+  dedicated to an area of interest with its own workflow(s).
+  
+  We could continue to add files to the `app/` folder. 
+  That's unrealistic and ultimately not maintainable.
+  We think it's best if each feature area is in its own folder.
+  
+  Our first step is to **create a separate `app/heroes/` folder**. 
+  Then we'll add Hero management feature files.
+  
+  We won't be creative about this. Our example is pretty much a 
+  copy of the code and capabilities in the "[Tutorial: Tour of Heroes](../tutorial/index.html)".
+  
+  Here's how the user will experience this version of the app
+figure.image-display
+  img(src='/resources/images/devguide/router/router-2-anim.gif' alt="App in action" )
+:marked
+  ### Add Heroes functionality
+  
+  We delete the placeholder `hero-list.component.ts` that's in
+  the `app/` folder. 
+  
+  We create a new `hero-list.component.ts` in the `app/heroes/`
+  folder and copy over the contents of the final `heroes.component.ts` from the tutorial.
+  We also copy the `hero-detail.component.ts` and the `hero.service.ts` files 
+  into the `heroes/` folder while we're at it.
+  
+  When were done organizing, we have three "Hero" files:
+  
+  ```
+  src/app/heroes/
+            ├── hero-detail.component.ts
+            ├── hero-list.component.ts
+            └── hero.service.ts
+  ```
+  Here as in the tutorial, we'll provide the `HeroService` during bootstrapping 
+  so that is available anywhere in the app (see `boot.ts`) .
+  
+  Now it's time for some surgery to bring these files and the rest of the app
+  into alignment with our application router.
+  
+.l-sub-section
+  :marked
+    This isn't a tutorial and we're not about to review every step nor every line of code. 
+    We're concentrating on routing and that's the code we'll discuss.
+    
+    We'll present the final result in the [Heroes App wrap-up](#heroes-app-wrap-up) for
+    those readers who want to reconstruct the application as it stands at the end of
+    this section.
+:marked
+  ### New route definition with route parameter
+  
+  The new Heroes feature has two interacting components, the list and the detail.
+  The list view is self-sufficient; we navigate to it, it gets a list of heroes and displays them.
+  It doesn't need any outside information.
+  
+  The detail view is different. It displays a particular hero. It can't know which hero on its own.
+  That information must come from outside. 
+  
+  In our example, when the user selects a hero from the list, we navigate to the detail view to show that hero.
+  We'll tell the detail view which hero to display by including the selected hero's id in the route URL.
+
+  With that plan in mind, we return to the `app.component.ts` to  make changes to the router's configuration
+  
+  First, we import the two components from their new locations in the `app/heroes/` folder:
++makeExample(`router/ts/src/app/app.component.2.ts`,'hero-import')
+:marked
+  Then we update the `@RouteConfig` route definitions :
++makeExample(`router/ts/src/app/app.component.2.ts`,'route-config')
+:marked
+  The `CrisisCenter` and `Heroes` definitions didn't change. 
+  While we moved `hero-list.component.ts` to a new location in the `app/heroes/` folder, that only affects the `import` statement;
+  it doesn't affect its route definition.
+  
+  We added a new route definition for the `HeroDetailComponent` ... and this definition has a twist.
++makeExample(`router/ts/src/app/app.component.2.ts`,'hero-detail-route')
+:marked
+  Notice the `:id` token in the the path. That creates a slot in the path for a **Route Parameter**. 
+  In this case, we're expecting the router to insert the `id` of a hero into that slot.
+  
+  If we tell the router to navigate to the detail component and display "Magenta", we expect her `id` (15) to appear in the
+  browser URL like this:
+code-example(format="." language="bash").
+  localhost:3002/src/#/hero/15
+:marked
+  If someone enters that URL into the browser address bar, the router should recognize the
+  pattern and go to the same "Magenta" detail view.
+
+  ### Navigate to the detail imperatively
+  
+  We don't navigate to the detail component by clicking a link.
+  We won't be adding a new anchor tag to the shell navigation bar.
+  
+  Instead, we'll detect when the user selects a hero from the list and tell the router
+  to present the hero detail view of the selected hero. These tasks belong to the `HeroListComponent`.
+  
+  We begin with its template:
++makeExample(`router/ts/src/app/heroes/hero-list.component.ts`,'template')
+:marked
+  The template defines an `*ng-for` repeater such as [we've seen before](displaying-data.html#ng-for).
+  There's a `(click)` [EventBinding](template-syntax.html#event-binding) to the component's `select` method
+  which looks like this:
++makeExample(`router/ts/src/app/heroes/hero-list.component.ts`,'select')
+:marked
+  We are calling the router's **`navigate`** method with a **Link Parameters Array**.
+  
+  ### Setting the route parameter
+  We met the *link parameters array* [earlier](#shell-template) when we bound it to the `RouterLink` directive 
+  in an anchor tag of the `AppComponent`.
+  
+  *That* array only had one item, the name of the destination route.
+  
+  *This* array has two items:  the **name** of the destination route and a **route parameters object** that specifies the
+  `id` of the selected hero.
+.l-sub-section
+  :marked
+    The component received the router via dependency injection. 
+    Here's the `HeroListComponent` constructor asking for the router:
+  +makeExample(`router/ts/src/app/heroes/hero-list.component.ts`,'ctor')
+  br
+  :marked
+    It also asks for the `HeroService`. 
+    We're not discussing the `HeroService` but we can find it in the Heroes app [code listing](#heroes-app-code).
+:marked
+  Let's see how the `HeroDetailComponent` gets the hero's `id`.
+  
+  ### Getting the route parameter
+  In the `HeroListComponent.select` method we passed the selected hero `id` in the second item, 
+  the *route parameters* object, of the *link parameters array*.
+  
+  <a id="hero-detail-ctor"></a>
+  How does the target `HeroDetailComponent` get that `id`? By way of the `RouteParams` service
+  injected into its constructor:
++makeExample(`router/ts/src/app/heroes/hero-detail.component.ts`,'ctor')
+:marked
+  The component holds the `RouteParams` service in a private variable and refers to it later when Angular
+  calls the component's `onInit` method.
++makeExample(`router/ts/src/app/heroes/hero-detail.component.ts`,'onInit')
+:marked
+  There we ask the `RouteParams` service for the parameter by name. The returned value is always a string 
+  (because it came from the URL). 
+  
+  This particular implementation converts the string to an integer and asks
+  the `HeroService` to fetch the hero with that `id`.
+.l-sub-section
+  :marked
+    Angular calls this `onInit` method shortly after creating an instance of the `HeroDetailComponent`.
+    
+    We might have put this logic inside the constructor rather than in the `onInit` method.
+    We discuss why in an the [OnInit appendix](#onInit) below.
+:marked
+  ### Navigating back to the list component
+  The `HeroDetailComponent` has a "Back" button wired to its `gotoHeroes` method.
++makeExample(`router/ts/src/app/heroes/hero-detail.component.ts`,'gotoHeroes')
+:marked
+  That method also navigates imperatively based on a one-item *link parameters array* holding 
+  the **name of the destination route**. That's the same syntax we saw in the `[router-link]` directive binding.
+
+  ### Heroes App Wrap-up
+  
+  We've reached the second milestone in our router education.
+  
+  We've learned how to
+  * organize our app into "feature areas"
+  * navigate imperatively from one component to another
+  * pass information along in route parameters (`RouteParams`)
+  * switch to hash (#) style browser URLS
+  
+  After these changes, the folder structure from the root `src/` folder down looks like this:
+  ```
+  src/
+   ├── app/
+   │    ├── heroes/
+   │    │    ├── hero-detail.component.ts
+   │    │    ├── hero-list.component.ts
+   │    │    └── hero.service.ts
+   │    ├── app.component.ts
+   |    ├── boot.ts
+   │    └── crisis-list.component.ts
+   ├── index.html
+   ├── styles.css
+   └── tsconfig.json
+  ```
+:marked
+  <a id="heroes-app-code"></a>
+  ### The Heroes App code
+  Here are the application-specific files for this version of the sample application. 
+  We've omitted the files that haven't changed.
++makeTabs(
+  `router/ts/src/app/app.component.2.ts,
+   router/ts/src/app/boot.2.ts,
+   router/ts/src/app/heroes/hero-list.component.ts,
+   router/ts/src/app/heroes/hero-detail.component.ts,
+   router/ts/src/app/heroes/hero.service.ts, 
+   router/ts/src/styles.css`,
+  `,v2,,,,heroes`, 
+  `app.component.ts, 
+  boot.ts,
+  hero-list.component.ts,
+  hero-detail.component.ts, 
+  hero.service.ts, 
+  styles.css`)
+:marked
+
+<a id="crisis-center-feature"></a>
+.l-main-section
+:marked
+  ## Milestone #3: The Crisis Center
+  The "Crisis Center" is a fake view at the moment. Time to make it useful.
+  
+  The new "Crisis Center" begins as a virtual copy of the "Heroes" feature.
+  We create a new `app/crisis-center` folder, copy the Hero files,
+  and change every mention of "hero" to "crisis".
+  
+  A `Crisis` has an `id` and `name`, just like a `Hero`
+  The new `CrisisListComponent` displays lists of crises.
+  When the user selects a crisis, the app navigates to the `CrisisDetailComponent`
+  for display and editing of the crisis name.
+  
+  Voilà, instant feature module!
+  
+  Of course this is only a sample application. 
+  There's no point to this exercise unless we can learn something new.
+  
+  We do have new points to make:
+  
+  * The application should navigate to the "Crisis Center" by default.
+  
+  * The user should be able to cancel unwanted changes.
+  
+  * The router should prevent navigation away from the detail view while there are pending changes.
+  
+  * When we return to the list from the detail, the previously edited crisis should be pre-selected in the list.
+  That will require passing information *back* to the list from the detail.
+  
+  There are also some lingering annoyances in the "Heroes" implementation that we can cure in the "Crisis Center".
+  
+  * We refer to route names with string values ('CrisisCenter'); magic strings are bad.
+  
+  * Route definitions mix with component template and logic in the same `AppComponent` file.
+  That's OK while we have three routes. It will get ugly as the number of routes grow. Almost none of that growth would
+  change the way the `AppComponent` looks or behaves.
+  
+  * We currently register every route of every view at the highest level of the application.
+  If we expand the "Crisis Center" with a 100 new views, we'll make 100 changes to the
+  `AppComponent` route configuration. If we rename a "Crisis Center" component or change a route definition,
+  we'll be changing the `AppComponent` too.
+  
+  * If we followed "Heroes" lead, we'd be adding the `CrisisService` to the providers in `boot.ts`.
+  Now both `HeroService` and `CrisisService` would be available everywhere although
+  they're only needed in their respective feature modules. That stinks.
+  
+  Changes to a sub-module such as "Crisis Center" shouldn't provoke changes to the `AppComponent` or `boot.ts`.
+  We need to [*separate our concerns*](https://blog.8thlight.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html).
+  
+  We'll fix all of these problems and add the new routing features to "Crisis Center".
+  We'll leave "Heroes" in its less-than-perfect state to
+  serve as a contrast with what we hope is a superior "Crisis Center".
+  
+.l-sub-section
+  :marked
+    We saw the "Crisis Center" in action in the application overview [above](#full-app-demo).
+    
+    This chapter isn't a tutorial and we won't explain how to build the app. We'll cherry pick just the fragments that
+    highlight points pertinent to routing.
+    
+    The final "Crisis Center" folder structure and source code are listed [below](#crisis-center-structure-and-code).
+:marked
+  ### A Root Component for the Crisis Center
+  We want the "Crisis Center" to be its own, stand-alone *module*.
+  Someday it might be loaded dynamically only when needed or re-used in a different application.
+  
+  Some might call it [yagni](http://martinfowler.com/bliki/Yagni.html) to even think about such things.
+  But we're right to be nervous about the way artifacts within "Heroes" and "Crisis Center" are
+  bubbling up to the root `AppComponent` and blending with each other. 
+  That's a [code smell](http://martinfowler.com/bliki/CodeSmell.html).
+  
+  Isolating the feature area modules from each other is starting to look good to us.
+.l-sub-section
+  :marked
+    It's looking good as a general pattern for Angular applications.
+  figure.image-display
+    img(src='/resources/images/devguide/router/component-tree.png' alt="Component Tree" )
+  :marked
+    * each feature area in its own module folder
+    * each area with its own root component 
+    * each area root component with its own router-outlet and child routes
+    * area routes rarely (if ever) cross
+
+:marked
+  We'll create a new `CrisisCenterComponent` to be the root of the entire Crisis Center area, 
+  just as `AppComponent` is the root of the entire application.
+
+  `AppComponent` has a router with its routes. 
+  `CrisisCenterComponent` has its own child router and its own routes.
+  The two sets of routes *will not overlap*. 
+  
+  Now the `CrisisCenterComponent` can evolve without
+  affecting the parent `AppComponent`. It's a small change with big benefits.
+  
+  Here's the code.
++makeExample(`router/ts/src/app/crisis-center/crisis-center.component.ts`,null, 'crisis-center/crisis-center.component.ts')
+:marked
+  This `CrisisCenterComponent` is a mini-shell, a mini-`AppComponent`, focused
+  exclusively on the concerns of crisis management.
+  
+  Its template is dead simple: no content, no links, just a `<router-outlet>` for the "Crisis Center"
+  views produced by its child router. 
+  
+  Ther's no selector either. We don't embed this component in a parent template. We navigate to it
+  from the outside, via a parent router (more on that soon).
+  
+  We're adding the `CrisisService` to the component's providers instead of in `boot.ts`,
+  making it available to any "Crisis Center" component *and nowhere else*. 
+  
+  The `@RouteConfig` decorator that adorns the component class creates a child router hosted by this component.
+  
+  Most importantly, we no longer create a route definitions array in the argument to `@RouteConfig`.
+  We `import` it instead from a sibling `routes` file in the `crisis-center` folder.
+  
+  ### The Crisis Center *routes*
+  
+  Here's that `routes` file:
+
++makeExample(`router/ts/src/app/crisis-center/routes.ts`,null, 'crisis-center/routes.ts')
+:marked
+  Observations:
+    * We `import` the `RouteDefinition` symbol from the router library so 
+    we can have TypeScript type support as we define routes.
+    
+    * We `import` symbols for just those Crisis Center components involved in routing.
+ 
+    * We store the route names in an exported constant `ROUTE_NAMES` and reference them in our route definitions. 
+    Elsewhere we'll use this constant, rather than magic strings, to refer to named routes.
+    
+    * We create and export a `ROUTES` array with the Crisis Center route definitions. 
+    It's the same array we would have created as a parameter to the `@RouteConfig` 
+    decorating `CrisisCenterComponent`. We're creating it here instead.
+    
+    * We can expand this file with more routes as the Crisis Center evolves and we won't have to
+    touch the `CrisisCenterComponent` or the `AppComponent` shells.
+
+  ### *ROUTE_NAMES* in the *CrisisListComponent*
+   Both the `HeroListComponent` and the `CrisisListComponent` navigate to the detail views
+  when the user selects an item from the list. Here we list their `onSelect` methods, side-by-side,
+  to see the effect of using `ROUTE_NAMES`  
++makeTabs(
+  `router/ts/src/app/crisis-center/crisis-list.component.ts,
+   router/ts/src/app/heroes/hero-list.component.ts`,
+   'select, select', 
+   'crisis-list.component.ts, hero-list.component.ts')
+:marked
+  ### Smarter *CrisisDetailComponent*
+  
+  ### Cancel and Save
+  [INTRO]
+code-example(format=".").
+  &lt;button (click)="save()">Save&lt;/button>
+  &lt;button (click)="cancel()">Cancel&lt;/button>
+:marked
+  [EXPLAIN]
++makeExample(`router/ts/src/app/crisis-center/crisis-detail.component.ts`, 'cancel-save',
+ 'crisis-detail.component.ts (excerpt)')
+:marked
+  [EXPLANATION]
+  <a id="canDeactivate"></a>
+  ### Confirm before leaving with unsaved changes
+  [INTRO]
++makeExample(`router/ts/src/app/crisis-center/crisis-detail.component.ts`, 'canDeactivate',
+ 'crisis-detail.component.ts (excerpt)')
+:marked
+  [EXPLANATION]
+  ### Re-select crisis in the list via route param
+  [INTRO]
++makeExample(`router/ts/src/app/crisis-center/crisis-detail.component.ts`, 'gotoCrises',
+ 'crisis-detail.component.ts (excerpt)')
+:marked
+ [Routes]
++makeExample(`router/ts/src/app/crisis-center/routes.ts`, 'routes')
+:marked
+  [EXPLANATION]
++makeExample(`router/ts/src/app/crisis-center/crisis-list.component.ts`, 'isSelected',
+ 'crisis-list.component.ts (excerpt)')
+:marked
+  [EXPLANATION]
+code-example(format=".").
+  [class.selected]="isSelected(crisis)"
+:marked
+.alert.is-critical RESUME WORK HERE ON THE CRISIS CENTER VERSION! The HTML <base> element specifies the base URL to use for all relative URLs contained within a document. There can be only one <base> element in a document. 
+:marked
+  ### Refactor Application Routes to *app/routes*
+  Let's create the routes in their own `app/routes.ts` file. 
+  We'll get rid of the route magic strings at the same time.
+
++makeExample(`router/ts/src/app/routes.ts`,'CC', 'app/routes.ts')
+:marked
+  Observations:
+    
+    * The component `import` statements we copied directly from `app.component.ts`
+    
+    * We `import` the `RouteDefinition` symbol from the router library so 
+    we get TypeScript type support as we add routes.
+    
+    * We pulled the magic string route names into the exported constant `ROUTE_NAMES` and use them in our route definitions. 
+    We'll use this constant elsewhere in the app when refering to named routes.
+    
+    * We create and export a `ROUTES` array with the same route definitions
+    we were passing to the `@RouteConfig` decorater in `app.component.ts`.
+    
+    * We added a redirect route.
+
+  ### Redirecting to "Crisis Center`
+
+
+<a id="chat-feature"></a>
+.l-main-section
+:marked
+  ## Milestone #4: Auxiliary Routes
+  Auxiliary routes are routes that can be activated independently of the current
+  route. They are entirely optional, depending on your app needs.
+  
+  For example, your application may have a modal that appears and this could
+  be an auxiliary route. The modal may have its own navigation needs, such as a slideshow
+  and that auxiliary route is able to manage the navigation stack independently of the
+  primary routes.
+  
+  In our sample application, we also want to have a chat feature that allows people 
+  the ability to have a live agent assist them. The chat window will have first an 
+  initial route that contains a prompt to ask the visitor if they'd like to chat with
+  an agent. Once they initiate a chat, they go to a new route for the chat experience.
+  
+.alert.is-critical Make diagram of chat routes
+  
+:marked
+  In this auxiliary chat experience, it overlays the current screen and persists.
+  If you navigate from the Heros to Crisis Center, the chat auxiliary route remains
+  active and in view. 
+  
+  Therefore the auxiliary routing is truly independent of the other
+  routing. In most respects, an auxiliary route behaves the same outside of it is rendered
+  in its own outlet and modifies the url differently.
+  
+  We'll look at how to setup an auxiliary route and considerations for when to use them.
+  
+  ### Auxiliary Route Outlet
+  In order to get an auxiliary route, it needs a place to be rendered. So far the app has
+  a single `RouterOutet` that the rest of our routes are rendered into. Auxiliary routes need to
+  have their own `RouterOutlet`, and that is done by giving it a name attribute. Open the 
+  `app.component.ts` file and let's add the new outlet to the template.
+.alert.is-critical Should remove app.component.4.ts based example (next) when we know what's what
++makeExample(`router/ts/src/app/app.component.4.ts`, 'chat-outlet', 'app/app.component.ts')
+.alert.is-critical Should be able to project from app.component.ts like this
++makeExample(`router/ts/src/app/app.component.ts`, 'template', 'app/app.component.ts')
+:marked
+  The name of the outlet must be unique to the component. You could reuse the name across
+  different components, so you don't have to worry about collisions.
+  
+  Here we give it a name of "chat", which will be used by the router when we setup our 
+  route configs. The app component needs to know about this Auxiliary route, so we
+  import the `ChatComponent`, add a new ROUTE_NAME (`chat`),
+  and add a new 'Chat' route to the `ROUTES` in  `app.routes.ts` (just below the redirect) .
++makeExample(`router/ts/src/app/routes.ts`, null, 'app/routes.ts')
+:marked
+  Look again at the 'Chat' route
++makeExample(`router/ts/src/app/routes.ts`,'chat-route')
+:marked
+  You can see the route definition is nearly the same, except instead of `path` there is
+  an `aux`. The `aux` property makes this an Auxiliary route.
+  
+  @TODO Explain how a named outlet is paired with an aux route.
+  
+  The chat component defines its own routes just like the other components, even though
+  it is an Auxiliary route.
+  
++makeExample(`router/ts/src/app/chat/routes.ts`, null, 'app/chat/routes.ts')  
+:marked
+  Even though this is an Auxiliary route, you notice there is no difference in how we've 
+  configured the route config for the primary chat component. The chat component also has 
+  the `RouterOutlet` Directive in the template so the child components render inside of
+  the chat window.
+  
+  In the chat components, we can use `RouterLink` to reference routes just the same as 
+  a normal route. Since this is inside of an Auxiliary route, these relative links will
+  resolve within the chat component and not change the primary route (the Crisis Center or 
+  Heros pages).
+  
++makeExample(`router/ts/src/app/chat/chat-init.component.ts`, 'chat-links')  
+  
+:marked
+  When the chat component opens, it first initializes this template to ask the user if 
+  they'd like to chat or not. If they agree, it takes them to the chat window where they
+  begin to send messages to the 'live' agent.
+  
+  The behavior of the chat components may be interesting, but have no additional insights
+  for routing, except for the ability to deactivate an active Auxiliary route.
+  
+  ### Exiting an Auxiliary Route
+  
+  @TODO Figure out how to close/deactivate an aux route
+
+  ### Auxiliary Route URLs
+  
+  Auxiliary Routes do modify the url using parens, like so.
+code-example(format=".", language="bash").
+  localhost:3002/crisis-center(chat)/2(details)
+:marked
+  This would be the url on a page where the user was viewing an item in the Crisis Center,
+  in this case the "Dragon Burning Cities" crisis, and the `(chat)` Auxiliary Route would
+  active and on the details child route.
+  
+  ### Multiple Auxiliary Routes
+  
+  There is no limit to how many Auxiliary Routes you have defined or active. There is probably
+  a practical limit where too much appears on the screen for a user, but you can have as many
+  Auxiliary Routes as you have named `RouteOutlet`s.
+
+:marked
+  ### Auxiliary Route Summary
+  
+  * Auxiliary routes are normal routes that are rendered outside of the primary `RouterOutlet`
+  * They must use a named `RouterOutlet` to render.
+  * Can be activated as long as the parent component is active.
+  * Links inside of child components are resolved against the aux parent component.
+  * Auxiliary routes are deactivated by @TODO?
+  * Routes are indicated in the url using parens.
+  * Multiple aux routes can be active at once.
+
+  @TODO Async?
+
+<a id="final-app"></a>
+.l-main-section
+:marked
+  ## The Finished App
+  As we end our chapter together, we take a parting look at
+  the entire application.
+  
+  ### Folder structure
+  Our final project folder structure looks like this:
+  ```
+  router-sample
+  ├── node_modules/
+  ├── src/
+  │    ├── app/
+  │    │    ├── chat/
+  │    │    ├── crisis-center/
+  │    │    ├── heroes/
+  |    │    └── ...
+  │    ├── index.html
+  │    ├── styles.css
+  │    └── tsconfig.json
+  └── package.json
+  ``` 
+  ### Top level 
+  The `src` file structure looks like this
+  ```
+  src/
+  ├── app/
+  │    ├── ...
+  │    ├── app.component.ts
+  │    ├── boot.ts
+  │    ├── dialog.service.ts
+  │    └── routes.ts
+  ├── index.html
+  ├── styles.css  
+  └── tsconfig.json
+  ```
+  The top level application files are
++makeTabs(
+  `router/ts/src/app/app.component.ts,
+   router/ts/src/app/boot.ts,
+   router/ts/src/app/routes.ts,
+   router/ts/src/app/dialog.service.ts,   
+   router/ts/src/index.html,   
+   router/ts/src/styles.css
+  `,
+  null, 
+  `app.component.ts, 
+   boot.ts,
+   routes.ts,
+   dialog.service.ts,
+   index.html, 
+   styles.css
+  `)
+:marked
+  <a id="crisis-center-structure-and-code"></id>
+  ### Crisis Center
+  The "Crisis Center" feature area within the `crisis-center` folder follows:
+  ```
+  app/
+    crisis-center/
+    ├── crisis-center.component.ts
+    ├── crisis-detail.component.ts
+    ├── crisis-list.component.ts
+    ├── crisis.service.ts
+    └── routes.ts
+  ```
++makeTabs(
+   `router/ts/src/app/crisis-center/crisis-center.component.ts,
+   router/ts/src/app/crisis-center/routes.ts,      
+   router/ts/src/app/crisis-center/crisis-list.component.ts,   
+   router/ts/src/app/crisis-center/crisis-detail.component.ts,
+   router/ts/src/app/crisis-center/crisis.service.ts
+  `,
+  null, 
+   `crisis-center.component.ts,
+   crisis-center/routes.ts,
+   crisis-list.component.ts,
+   crisis-detail.component.ts,
+   crisis.service.ts,            
+  `)
+:marked
+  ### Heroes
+  The "Heroes" feature area within the `heroes` folder is next:
+  ```
+  app/
+    heroes/
+    ├── hero-detail.component.ts
+    ├── hero-list.component.ts
+    └── hero.service.ts
+  ```
++makeTabs(
+   `router/ts/src/app/heroes/hero-list.component.ts,
+   router/ts/src/app/heroes/hero-detail.component.ts,
+   router/ts/src/app/heroes/hero.service.ts
+  `,
+  null, 
+   `hero-list.component.ts,
+   hero-detail.component.ts,
+   hero.service.ts   
+  `)
+:marked
+  ### Chat
+  The "Chat" feature area within the `chat` folder looks like this:
+  ```
+  app/
+    chat/
+    ├── chat-detail.component.ts
+    ├── chat-init.component.ts
+    ├── chat.component.ts
+    ├── chat.service.ts
+    └── routes.ts
+  ```
++makeTabs(
+   `router/ts/src/app/chat/chat.component.ts,
+   router/ts/src/app/chat/routes.ts,      
+   router/ts/src/app/chat/chat-init.component.ts,   
+   router/ts/src/app/chat/chat-detail.component.ts,
+   router/ts/src/app/chat/chat.service.ts
+  `,
+  null, 
+   `chat.component.ts,
+   chat/routes.ts,
+   chat-init.component.ts,
+   chat-detail.component.ts,
+   chat.service.ts,            
+  `)
+ 
+ <a name="browser-url-styles"></a>
+.l-main-section
+:marked
+  ## Appendix: Browser URL styles
+  
+  When the router navigates to a new component view, it updates the browser's location and history
+  with a URL for that view.
+  This is a strictly local URL. The browser shouldn't send a request to the server
+  and should not reload the page.
+.l-sub-section
+  :marked
+    We're talking now about the ***browser*** URL 
+    **not** the *route* URL that we record in a `RouteDefinition`. 
+    The browser URL is what we paste into the browser's **address bar**
+    and email to folks so they can deep-link into an application page.
+:marked
+  Modern HTML 5 browsers support 
+  [history.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History_API#Adding_and_modifying_history_entries), 
+  a technique that changes a browser's location and history without triggering a server page request. 
+  The router can compose a "natural" URL that is indistinguishable from
+  one that would otherwise require a page load. 
+  
+  Here's the "Crisis Center" URL in this "HTML 5 pushState" style:
+code-example(format=".", language="bash").
+  localhost:3002/crisis-center/
+:marked
+  Older browsers send page requests to the server when the location URL changes ... 
+  unless the change occurs after a "#" (called the "hash"). 
+  Routers take advantage of this exception by composing in-application route
+  URLs with hashes.  Here's a "hash URL" that routes to the "Crisis Center"
+code-example(format=".", language="bash").
+  localhost:3002/src/#/crisis-center/
+:marked
+  The Angular Component Router supports both styles. 
+  We set our preference by providing a `LocationStrategy` during the bootstrapping process.
+.l-sub-section
+  :marked
+    Learn about "providers" and the bootstrap process in the
+    [Dependency Injection chapter](dependency-injection#bootstrap)
+:marked
+  ### Which Strategy is Best?
+  We must choose a strategy and we need to make the right call early in the project. 
+  It won't be easy to change later once the application is in production
+  and there are lots of application URL references in the wild.
+  
+  Almost all Angular 2 projects should use the default HTML 5 style.
+  It produces URLs that are easier for users to understand.
+  And it preserves the option to do **server-side rendering** later.
+  
+  Rendering critical pages on the server is a technique that can greatly improve
+  perceived responsiveness when the app first loads.
+  An app that would otherwise take ten or more seconds to start 
+  could be rendered on the server and delivered to the user's device
+  in less than a second.
+  
+  Thist option is only available if application URLs look like normal web URLs
+  without hashes (#) in the middle.
+
+  Stick with the default unless you have a compelling reason to
+  resort to hash routes.
+  
+  ### HTML 5 URLs and the  *&lt;base href>*
+  The router use the "[HTML 5 pushState](https://developer.mozilla.org/en-US/docs/Web/API/History_API#Adding_and_modifying_history_entries)" 
+   style by default.
+  We don't have to provide the router's `PathLocationStrategy` because it's loaded automatically.
+  
+  We *must* add a
+  [&lt;base href> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base) tag 
+  in the `<head>` of the `index.html`.
++makeExample(`router/ts/src/index.html`,'base-href')(format=".")
+:marked
+  Without that tag, the browser may not be be able to load resources 
+  (images, css, scripts) when "deep linking" into the app.
+  Bad things could happen when someone pastes an application link into the 
+  browser's address bar or clicks such a link in an email link. 
+
+  Some developers may not be able to add the `<base>` element, perhaps because they don't have
+  access to `<head>` or the `index.html`.
+  
+  Those developers may still use HTML 5 URLs by taking two remedial steps:
+  
+  1. Provide the router with an appropriate `APP_BASE_HREF` value.
+  1. Use **absolute URLs** for all web resources: css, images, scripts, and template html files.
+
+.l-sub-section
+  :marked
+    Learn about the [APP_BASE_HREF](https://angular.io/docs/ts/latest/api/router/APP_BASE_HREF-const.html) 
+    in the API Guide.
+:marked
+  ### *HashLocationStrategy*
+  We can go old-school with the `HashLocationStrategy` by
+  providing it as the router's `LocationStrategy` during application bootstrapping.
+  
+  That means importing `provide` for Dependency Injection and the 
+  `Location` and `HashLocationStrategy` symbols from the router, 
+  then providing that strategy in the call to `bootstrap`:
++makeExample('router/ts/src/app/boot.2.ts', 'hash-strategy')
+
+
+<a id="onInit"></a>
+.l-main-section
+:marked
+  ## Appendix: Why use an *OnInit* method
+
+  We implemented an `onInit` method in many of our Component classes. 
+  We did so, for example, in the [HeroDetailComponent](#hero-detail-ctor).
+  We might have put the `onInit` logic inside the constructor instead. We didn't for a reason. The reason is *testability*.
+  
+  A constructor that has major side-effects can be difficult to test because it starts doing things as soon as
+  we create a test instance. In this case, it might have made a request to a remote server, something it shouldn't
+  do under test. It may even be impossible to reach the server in the test environment.
+  
+  The better practice is to limit what the constructor can do. Mostly it should stash parameters in
+  local variables and perform simple instance configuration.
+  
+  Yet we want an instance of this class to get the hero data from the `HeroService` soon after it is created.
+  How do we ensure that happens if not in the constructor?
+  
+  Angular detects when a component has certain lifecycle methods like 
+  [onInit](https://angular.io/docs/ts/latest/api/core/OnInit-interface.html) and 
+  [onDestroy](https://angular.io/docs/ts/latest/api/core/OnDestroy-interface.html) and calls them
+  at the appropriate moment.
+  
+  Angular will call `onInit` when we navigate to the `HeroDetailComponent`, we'll get the `id` from the `RouteParams`
+  and ask the server for the hero with that `id`.
+  
+  We too can call that `onInit` method in our tests if we wish ... after taking control of the injected
+  `HeroService` and (perhaps) mocking it.

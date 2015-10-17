@@ -1,0 +1,42 @@
+import {Component} from 'angular2/angular2';
+import {Crisis, CrisisService} from './crisis.service';
+import {DialogService} from '../dialog.service';
+import {CanDeactivate, ComponentInstruction, Router} from 'angular2/router';
+import {ROUTE_NAMES} from './routes';
+
+@Component({
+  template: `
+  <h2>"{{editName}}"</h2>
+  <div>
+    <label>Name: </label>
+    <input [(ng-model)]="editName" placeholder="name"/>
+  </div>
+  <button (click)="save()">Save</button>
+  <button (click)="cancel()">Cancel</button>
+  `,
+  styles: ['input {width: 20em}']
+})
+export class AddCrisisComponent implements CanDeactivate {
+  public editName: string;
+
+  constructor(
+    private _service: CrisisService,
+    private _router: Router,
+    private _dialog: DialogService) { }
+
+  canDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+    return !!this.editName.trim() ||
+           this._dialog.confirm('Discard changes?');
+  }
+
+  cancel() { this.gotoCrises(); }
+
+  save() {
+    this._service.addCrisis(this.editName);
+    this.gotoCrises();
+  }
+
+  gotoCrises() {
+    this._router.navigate([ROUTE_NAMES.crisisCenter]);
+  }
+}

@@ -1,0 +1,43 @@
+// #docregion
+import {Component,  OnInit}  from 'angular2/angular2';
+import {Hero, HeroService}   from './hero.service';
+import {RouteParams, Router} from 'angular2/router';
+
+@Component({
+  template: `
+  <h2>HEROES</h2>
+  <div *ng-if="hero">
+    <h3>"{{hero.name}}"</h3>
+    <div>
+      <label>Id: </label>{{hero.id}}</div>
+    <div>
+      <label>Name: </label>
+      <input [(ng-model)]="hero.name" placeholder="name"/>
+    </div>
+    <button (click)="gotoHeroes()">Back</button>
+  </div>
+  `,
+})
+export class HeroDetailComponent implements OnInit  {
+  public hero: Hero;
+
+  // #docregion ctor
+  constructor(
+    private _router:Router,
+    private _routeParams:RouteParams,
+    private _service:HeroService){}
+  // #enddocregion ctor
+
+  // #docregion onInit
+  onInit() {
+    let id = +this._routeParams.get('id');
+    this._service.getHero(id).then(hero => this.hero = hero);
+  }
+  // #enddocregion onInit
+
+  // #docregion gotoHeroes
+  gotoHeroes() {
+    this._router.navigate(['Heroes']);
+  }
+  // #enddocregion gotoHeroes
+}

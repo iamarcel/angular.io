@@ -1,0 +1,25 @@
+{
+  "name": "angular2-getting-started",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc -p src",
+    "tsc:w": "tsc -p src -w",
+    "lite": "lite-server --open src",
+    "live": "live-server --open=src",
+    "start": "npm run lite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular2": "2.0.0-alpha.46",
+    "systemjs": "0.19.6"
+  },
+  "devDependencies": {
+    "lite-server": "^1.2.0",
+    "live-server": "^0.8.1",
+    "typescript": "^1.6.2"
+  }
+}
