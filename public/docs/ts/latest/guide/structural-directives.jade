@@ -1,0 +1,647 @@
+include ../../../../_includes/_util-fns
+
+:marked
+  One of the defining features of a single page application is its manipulation
+  of the DOM tree. Instead of serving a whole new page every time a user
+  navigates, whole sections of the DOM disappear and are reconstructed according 
+  to the application state. In this chapter we'll to look at how Angular
+  does this DOM manipulation, and how we can do it ourselves in our own directives.
+  
+  ### Table of contents
+  
+  - [Structural directives and element instantiation](#structural-directives-and-element-instantiation)
+  - [Presence versus visibility](#presence-versus-visibility)
+  - [Behind the hood: templates](#behind-the-hood-templates)
+  - [Making our own structural directive](#making-our-own-structural-directive)
+  - [The code so far](#the-code-so-far)
+  - [Configurable component DOM](#configurable-component-dom)
+  - [Heroes Dashboard](#heroes-dashboard)
+  - [A tale of three DOMs](#a-tale-of-three-doms)
+  - [Element projection](#element-projection)
+  - [Templates for components](#templates-for-components)
+  - [Components as first-class citizens](#components-as-first-class-citizens)
+  - [Finished dashboard](#finished-dashboard)
+  - [Wrapping up](#wrapping-up)
+  
+  A live example of all the code in this chapter can be found in [this plunker](/resources/live-examples/structural-directives/ts/src/plnkr.html).
+  
+:marked
+  ## Structural directives and element instantiation
+  
+  We've seen the three structural directives in other chapters: [ng-if](template-syntax.html#ng-if),
+  [ng-switch](template-syntax.html#ng-switch) and [ng-for](template-syntax.html#ng-for). 
+  
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'structural-directives')   
+  
+:marked
+  Lets focus on `ng-if` for a moment. It's a great example of a structural 
+  directive: it takes a boolean and makes a whole section of the DOM appear 
+  or disappear.
+ 
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'ng-if')
+
+:marked
+  `ng-if` doesn't merely hide the element. 
+  Using Chrome's dev tools we can see that the disused paragraph is completely 
+  absent from the DOM!
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/element-not-in-dom.png' alt="element not in dom")
+
+.l-main-section
+:marked
+  ## Presence versus visibility
+  This has important implications. Were the element simply hidden, then whatever
+  behaviour that element had would still be followed through. 
+  
+  For instance, if  we had a component inside that `ng-if` with some 
+  initialization logic (fetching  data comes to mind) then the difference 
+  between hiding and removing would be whether or not that initialization 
+  logic would run.
+  
+  The same goes for any other lifecycle events, like clean-up logic on when
+  destroying a component. Components can also have other components inside of
+  them, that have their own lifecycle events. This can quickly affect a lot
+  of components!
+  
+  On the other hand a component can also have components that are tying up our
+  available resources *while* they are up. For this, it makes much more sense
+  to wholly remove them from the DOM. 
+  In fact, most components fall under this category since they will always need 
+  Angular 2 to manage their lifecycle, inputs and outputs. This needs to happen
+  whether or not we're doing processing of our own.
+  
+  Thus the overall recommendation is: we should avoid doing massive operations
+  on initialization, and prefer to remove components instead of just hiding 
+  them. We will, of course, face specific situations where the best option is to
+  do the reverse of this recommendation, but they are the exception instead
+  of the rule.
+  
+  Let's see this happening. Consider a component called `heavy-loader` that 
+  loads a lot of data when initialized, then has to clean up when destroyed.
+  
++makeExample('structural-directives/ts/src/app/heavy-loader.component.ts',null,'heavy-loader.component.ts')
+
+:marked
+  We'll have two such components. In one of them, we'll toggle its *presence*
+  in the DOM via `ng-if`, and in the other we'll toggle its *visibility* via
+  css.
+    
+  We'll also keep a log of when these components are being initialized or 
+  destroyed using the built-in lifecycle `onInit` and `onDestroy` events. 
+  It looks something like this.c
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/heavy-loader-toggle.gif' alt="heavy loader toggle")
+  
+:marked
+  As we can see, both components are start present in the DOM, and we can see
+  messages showing they were initialized. When we toggle the first element
+  (using via `ng-if`), it is destroyed. Toggling it a second time 
+  initializes it again.
+  
+  In contrast, toggling the second one (using css) we can see it is neither
+  destroyed nor reinitialized! It is just being *hidden* instead of removed.
+  
+  It is not hard to imagine the reverse situation, where we are continuously
+  doing computation in a component. In this case we could have the two 
+  components turned off and *still* this computation would continue on the one
+  that was just hidden via css.
+
+.l-main-section
+:marked
+  ## Behind the hood: templates
+  
+  Structural directives, like `ng-if`, do their magic by using the 
+  [HTML 5 template tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+  
+  Outside of an Angular 2 application the `<template>` tag has its CSS `display` property
+  set to `none` and it creates a hidden [document fragment](https://developer.mozilla.org/en/docs/Web/API/DocumentFragment)
+  with its contents. If we try to declare the following HTML, we'll find that
+  our page will be one 'Hip!' away from proper enthusiasm.
+  
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'template-tag')  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/template-outside-angular.png' alt="template outside angular")    
+   
+:marked
+  Inside of an Angular 2 application `<template>` doesn't do anything. Or
+  rather, it does *nothing*, which is something quite special to 
+  do. The element it will not only be invisible, but even completely absent 
+  from the DOM, children and all. It is whisked away - but not completely lost,
+  as we'll see later.
+  
+  We do see a `<script></script>` in its place instead though. This is a 
+  tell-tale sign that Angular 2 did *something* at that place in the DOM.
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/template-inside-angular.png' alt="template inside angular")
+
+:marked
+  We see the `<template>` tag being used in `ng-switch`, but where is it in 
+  `ng-for` and `ng-if`?
+  
+  On the other hand, both `ng-for` and `ng-if` have an asterisk before the
+  directive name, while `ng-switch` has square brackets around his. 
+  
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'structural-directives')     
+  
+:marked
+  This is actually related: the asterisk means that the element is to be
+  moved inside a `<template>` tag , and the directive should be moved up to the 
+  new `<template>`. 
+  You can also directly declare `ng-if` using this alternative representation.
+  
+  Some code might help us understand this better. As far as Angular 2 is 
+  concerned, these two examples are the same:
+  
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'ng-if-template')
+
+:marked
+  `ng-for` behaves similarly, albeit with a few extra nuances resulting from
+  angular interpreting the [ng-for micro-syntax](template-syntax#micro-syntax).
+  
+  We can see that `ng-for` proper was moved up to the `<template>` tag but 
+  not as a property binding like `ng-if`. 
+  Instead we have a new property binding, `ng-for-of` holding the iterable.
+  Lastly there is a [local template variable](template-syntax#local-vars) that
+  will receive an element in each iteration.
+
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'ng-for-template')
+    
+.l-main-section
+:marked
+  ## Making our own structural directive
+
+  Now we know the secret behind structural directives: they manage templates!
+  We should be able to make our own. 
+
+:marked
+  Let's write a `my-unless` directive - the not-so-evil twin of `ng-if`.
+
+.callout.is-helpful 
+  header Selector name prefixes
+  :marked
+    We recommend picking a selector name that is always hyphenated to ensure
+    that it cannot conflict with any standard HTML attribute, now or in the future.
+    
+    We will **not** prefix our `unless` directive name with **`ng-`**. 
+    That prefix is reserved for Angular 2 directives and 
+    we don't want to confuse our directives with the core ones.
+    
+    In this example our prefix ... when we need one ... is `my-`.
+:marked
+  Unlike `ng-if`, our directive displays the template if the provided condition is ***false***. 
+
+:marked
+  First we create a directive, a task quite similar to creating a component. 
+  * import the `Directive` decorator.
+  
+  * add a CSS **attribute selector** (in brackets) that identifies our directive.
+  
+  * specify the name of the public `input` property for binding 
+  (typically the name of the directive itself).
+  
+  * apply the decorator to our implementation class.
+
+  Here is how we begin:
+    
++makeExample('structural-directives/ts/src/app/unless.directive.ts', 'unless-declaration')
+.l-sub-section
+  :marked
+    The brackets around the selector mean that this directive is trying to 
+    select an attribute. See `Directive configuration` on the [cheatsheet](cheatsheet).
+    
+:marked
+  Inside our directive we need access to both the template *and* something that can render it.
+  
+  The template is a `TemplateRef`.  The renderer is a `ViewContainerRef`. 
+  Conveniently, we can inject them into our constructor when the directive is 
+  applied to the `<template>` element.
+  
++makeExample('structural-directives/ts/src/app/unless.directive.ts', 'unless-constructor')
+
+:marked
+  The consumer of our directive will bind a `true`|`false` value to our directive's `myUnless` input property.
+  The directive adds or removes the template based on that value.
+
+  Let's add the `myUnless` property now as a setter-only
+  "[definedProperty](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)".
+  
++makeExample('structural-directives/ts/src/app/unless.directive.ts', 'unless-set')
+.l-sub-section
+  :marked
+    The `@Input()` annotation marks this property as an input for the directive.
+    
+    See this note about [directive spelling](template-syntax#spelling-target-names) to understand why the selector is `my-unless` but
+    the property name is `myUnless`.
+    
+:marked
+  Nothing fancy going on here: if the condition is false, 
+  we render the template, otherwise we clear the contents of our element.
+
+  The end result should look like below:
+  
++makeExample('structural-directives/ts/src/app/unless.directive.ts', null, 'unless.directive.ts')
+
+:marked
+  Now we add it to the `directives`array of the host component and try it. 
+  It behaves just like `ng-if` but inversed.
+  
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'my-unless')
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/ng-if-and-my-unless.png' alt="ng-if and unless")
+
+:marked
+  Our directive is quite simple, but surely the real `ng-if` is much more
+  complex? We can find out quite easily by 
+  [looking at the source code](https://github.com/angular/angular/blob/master/modules/angular2/src/common/directives/ng_if.ts).
+  
+  The source code for Angular 2 is quite well documented and we shouldn't be shy
+  about consulting it when we want to know how something works.
+  
+  It turns out that `ng-if` isn't much different at all! There's a few
+  additional checks for performance (avoiding clearing or recreating the
+  view when not needed) but otherwise it's pretty much the same.
+  
+.l-main-section  
+:marked
+  ## The code so far
+  
+  As always, code is king in any guide. Here is the full code used for the
+  examples we've gone through. 
+
++makeTabs(`
+  structural-directives/ts/src/app/unless.directive.ts,
+  structural-directives/ts/src/app/heavy-loader.component.ts,  
+  structural-directives/ts/src/app/structural-directives.component.ts,
+  structural-directives/ts/src/app/structural-directives.component.html
+  `, 
+  null, 
+  `unless.directive.ts,
+   heavy-loader.component.ts, 
+   structural-directives.component.ts,
+   structural-directives.component.html
+   `)
+
+.l-main-section  
+:marked
+  ## Configurable component DOM
+  
+  We've seen how a directive can use a template to stamp out copies of it in 
+  place, but there are more ways in which we can manipulate the DOM.
+  
+  When *declaring* a component in the DOM, Angular 2 will usually disregard
+  whatever its contents since that component will render its own template.
+  
+  For instance, if consider this simple component.
+
++makeExample('structural-directives/ts/src/app/my-component.component.ts')(format=".")
+
+:marked
+  Imagine we were to declare it with some content inside. What happens?
+
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'my-component-1')(format=".")
+
+:marked
+  Angular removes the DOM elements between the `my-component` tags and
+  inserts the rendered component template:
+
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/my-component-content.png' alt="my-component content")
+
+:marked
+  Clearly we want Angular to **incorporate** the material between the tags
+  *within* the component's template. 
+  
+  This is a powerful idea. We could create reusable components that
+  manipulate external DOM elements, oblivious to their representation. We could also provide
+  a component with a template with which to render certain data within itself.  
+  
+  Angular 2 provides the mechanisms to do just this. Over the next sections
+  we'll see how to build such a configurable component that receives from the 
+  outside a great deal of source material that it can manipulate and project 
+  inside of himself.
+  
+  We'll focus on three main points:
+  
+  * How to projects elements in the component declaration
+  
+  * How to provide and use templates in a component
+  
+  * How to interact with components imperatively
+  
+.l-main-section  
+:marked
+  ## Heroes Dashboard
+  
+  Our example app is a dashboard from which we can get an overview of the status
+  of both our HQ, and of our heroes.
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/dashboard-full.gif' alt="full dashboard")  
+
+:marked
+  Our dashboard will receive a representation of the HQ alerts from the component 
+  DOM declaration, together with a list of heroes and a template of how to 
+  represent a hero component.
+  We'll also interact with these `hero-detail` components via the `Recall all heroes` button.
+  
+  A hero is a simple class with id, name and status.
+  
+  Our main application is `my-app`, which contains a list of heroes, an alert 
+  and a function to update our alert. 
+  In its template, we have a declaration of `hero-dashboard`.
+
+  Our `hero-detail` component receives a hero to display and has a `recall()`
+  method, that will note that hero as being recalled.
+  
+  We also have a [pipe](pipes) called `hero-detail-status-pipe` that will let us 
+  filter an array of heroes by their status.
+  
+  And finally, we'll start with a barebones version of our `hero-dashboard`,
+  that we'll fill in as we go.
+  
+code-example.
+    angular2-hero-dashboard
+      ├── node_modules
+      ├── src
+      |    ├── app
+      |    |    ├── app.component.html
+      |    |    ├── app.component.ts
+      |    |    ├── boot.ts
+      |    |    ├── hero.ts
+      |    |    ├── hero-dashboard.css
+      |    |    ├── hero-dashboard.component.html
+      |    |    ├── hero-dashboard.component.ts
+      |    |    ├── hero-detail.css
+      |    |    ├── hero-detail.component.ts
+      |    |    └── hero-status.pipe.ts
+      |    ├── index.html
+      |    └── tsconfig.json
+      └── package.json
+:marked
+  Here are all of the interesting files in this application.
++makeTabs(`
+  structural-directives/ts/src/app/app.component.ts, 
+  structural-directives/ts/src/app/app.component.html, 
+  structural-directives/ts/src/app/hero.ts,
+  structural-directives/ts/src/app/hero-dashboard.component.1.ts,
+  structural-directives/ts/src/app/hero-dashboard.component.1.html,
+  structural-directives/ts/src/app/hero-detail.component.ts,
+  structural-directives/ts/src/app/hero-status.pipe.ts`,
+  null, 
+  `app.component.ts,
+  app.component.html,
+  hero.ts,
+  hero-dashboard.component.ts,
+  hero-dashboard.component.html,
+  hero-detail.component.ts,
+  hero-status.pipe.ts`)
+
+:marked
+  At this point we don't see much. We have a header, space for the HQ alerts,
+  lanes for each hero status, and a button.
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/dashboard-empty.png' alt="empty dashboard")
+
+:marked
+  But first, let's dive a bit deeper into DOM.
+
+.l-main-section  
+:marked
+  ## A tale of three DOMs
+  
+  We are used to seeing only one DOM - the one containing the elements we see
+  rendered the browser. 
+  But we have now also seen that the DOM we declare when we use a component 
+  is superseded by the components own template DOM.
+  So what's the sense behind this?
+  
+  The answer lies in [Shadow Dom](http://webcomponents.org/polyfills/shadow-dom/),
+  a part of the [Web Components Spec](http://w3c.github.io/webcomponents/spec/shadow/).
+  Angular uses Shadow DOM emulation by default, but can be configured to either
+  use a native browser Shadow DOM implementation, or to not use it at all.
+  
+  Shadow DOM lets Angular 2 encapsulate a components DOM. This is why styles
+  we declare for a component don't leak out and affect other components.
+  Everything is nice and tidy inside our components.
+  
+  According to the spec, we have can have a total of *three* DOM trees inside an
+  element: **light DOM**, **shadow DOM** and **composed DOM**.
+  
+  **Light DOM** is what we see when *using* a component. It's what component
+  consumers interact with, and how they can give component creators some DOM
+  for them to use. In our previous example, this was the light DOM:
+  
++makeExample('structural-directives/ts/src/app/structural-directives.component.html', 'my-component-1')(format=".")
+
+:marked
+  **Shadow DOM** is what we see when *creating* a component. It's what component
+  creators interact with, and what they use to structure their components.
+  Templates is where we keep our shadow DOM in angular.
+
++makeExample('structural-directives/ts/src/app/my-component.component.ts')(format=".")
+
+:marked
+  **Composed DOM** is what the browser ultimately renders, and thus what we see
+  in the browser.
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/my-component-content.png' alt="my-component content")
+
+:marked
+  So when we talked about projection and using externally provided DOM inside
+  our components, what we meant was that we were going to declare elements in 
+  the *light DOM* and use them from within our *shadow DOM*, creating the 
+  *composed DOM* that the browser will render. 
+  
+  The projected light DOM elements still remain in their original context as
+  far as bindings are concerned - they are merely being *rendered* inside 
+  another component. 
+  
+  This is important because they will still use their inputs and outputs from
+  the component where they are *declared*, and not where they are *displayed*.
+  
+  Knowing this, how is projection related to the templates?
+  It is true that the original template is in a components light DOM, but it's
+  used as a 'inert' master copy from which instances are stamped out within the
+  shadow DOM. 
+  For this reason, these copies will use bindings found *within* the component
+  instead of using the parent components bindings in the light DOM.
+  
+.l-main-section  
+:marked
+  ## Element projection
+  
+  Projection in Angular 2 is done via the `<ng-content>` component. It takes
+  a CSS selector via the `select` attribute, which it'll use to choose which
+  elements from the parent component to project.
+  
+  In the case of our dashboard, we want to pull in the following element found
+  in the parent component template:
+  
++makeExample('structural-directives/ts/src/app/app.component.html', 'alert', 'app.component.html')(format=".")
+  
+:marked
+  A simple way to select this element is via the `span.alert` selector. To slot
+  it into our `hero-dashboard` template, all we have to do is add in an
+  `ng-content` with that selector:
+
++makeExample('structural-directives/ts/src/app/hero-dashboard.component.html', 'ng-content-alert', 'hero-dashboard.component.html')(format=".")  
+
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/ng-content-alert.png' alt="ng-content projection alert")
+  
+:marked
+  And here we have it! We should be mindful though: if our selector had picked
+  up more than one element, `ng-content` would display them all one after the 
+  other, in the order found in the light DOM.
+  
+  There's another important bit here: the click handler on alert. Our dashboard
+  doesn't have any `updateAlert` method, yet...
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/projection-bindings.gif' alt="projection bindings")
+    
+:marked
+  The binding still works! Its calling the method defined in our parent
+  component, `AppComponent`.
+  
++makeExample('structural-directives/ts/src/app/app.component.ts', 'alert', 'app.component.ts')(format=".")    
+
+:marked
+  This makes sense if we think about it. The alert is being *rendered* in
+  our dashboard, but it still very much exists and is part of `AppComponent`.
+  In fact, if it wasn't so, the initial alert text wouldn't appear either since
+  it's a binding on `AppComponent` as well.
+
+.l-main-section  
+:marked
+  ## Templates for components
+  
+  Our dashboard also takes in a template of how should heroes be rendered.
+  Notice the `#hero` [local template variable](template-syntax.html#local-vars),
+  it's going to be very relevant soon.
+
++makeExample('structural-directives/ts/src/app/app.component.html', 'template', 'app.component.html')(format=".")
+
+:marked
+  To reference this template from within our component we will use our familiar
+  `TemplateRef` but this time we will not inject it in the constructor.
+  
+  Instead, we will use the `ContentChild` annotation. This annotation takes
+  a component, finds the its **first** instance in the current components light 
+  DOM, and binds it to the annotated variable.
+  
++makeExample('structural-directives/ts/src/app/hero-dashboard.component.ts', 'content-child', 'hero-dashboard.component.js')(format=".")
+
+:marked
+  When trying to find `<template>` we have to use the `TemplateRef` as argument
+  for the `ContentChild` annotation. This is because `<template>` is a very
+  special core part of Angular 2 - not quite a standalone component, but rather 
+  a fundamental part of the framework.
+  
+  If we wanted to find another component - say, `hero-detail` - we could query
+  `@ContentChild(HeroDetailComponent) heroDetail: HeroDetailComponent;` instead.
+  
+  Doing this in our `HeroDashboardComponent` right now wouldn't give us anything
+  though. Which is odd, since the the light DOM for `<hero-dashboard>` clearly
+  has `<hero-detail [hero]="hero"></hero-detail>`.
+  
+  This ties back into templates - they are 'inert' as we saw 
+  [before](#a-tale-of-three-doms). Their content is not instantiated, thus
+  our light DOM does not contain any `<hero-detail>`, only a template.
+  
+  Now we have a hold of the template in `heroTmpl`. To render it, we will use
+  a `ng-for` with a twist - we're going to give it a `TemplateRef` via the
+  `[ng-for-template]` binding.
+  
+  This is also where the `#hero` that we saw earlier in the template comes into 
+  play. `ng-for` will assign the current element to the template's local variable.
+  
++makeExample('structural-directives/ts/src/app/hero-dashboard.component.html', 'ng-for-template', 'hero-dashboard.component.html')(format=".")
+
+:marked
+  This way we can stamp out in our dashboards shadow DOM copies of the template
+  provided in its light DOM. Our dashboard never even knew what these look like!
+
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/ng-for-template.png' alt="ng-for-template")
+  
+.l-main-section  
+:marked
+  ## Components as first-class citizens
+  
+  At this point we're interacting with instantiated, 'living' components at 
+  quite a high level. We can declare them, send them over to over to be rendered
+  elsewhere and even use them as templates for other components content.
+  
+  The only thing missing is to talk to them directly. Our `HeroDetailComponent`
+  has a `recall` method inside of it that we'd like to access:
+  
++makeExample('structural-directives/ts/src/app/hero-detail.component.ts', 'recall', 'hero-detail.component.js')(format=".")
+
+:marked
+  We now have many `<hero-detail>` inside our dashboard, each with a different
+  hero. Specifically, inside the shadow DOM.
+  
+  To get a hold of this list of `HeroDetailComponent`, we can use the 
+  `@ViewChildren` annotation. There is a certain similarity between this 
+  annotation and the similarly named one in the previous section.
+  
+  `@ContentChild` gives us the **first** component of a type inside the 
+  **shadow DOM**, whereas `@ContentChildren` would give us a list of **all**
+  of them.
+  
+  `@ViewChild` gives us the **first** component of a type inside the 
+  **light DOM**, whereas `@ViewChildren` would give us a list of **all**
+  of them.
+  
+  Lists given by `@ContentChildren` and `@ViewChildren` are of the `QueryList`
+  type, and guaranteed to always the current, up to date components.
+  
+  Even though the `HeroDetail` component are declared in the template present in 
+  the light DOM, our copies of it were stamped out *inside* the shadow DOM for
+  `HeroDashboardComponent` by `ng-for`. Thus we must make use of `@ViewChildren` 
+  instead of `@ContentChildren`.
+  
+  Having these components, we can now interact with them. Since they are just
+  DOM elements we can simply access their properties and methods directly.
+  
++makeExample('structural-directives/ts/src/app/hero-dashboard.component.ts', 'view-children', 'hero-dashboard.component.js')(format=".")
+
+:marked
+  Now when we click our button, the `recall` method will be called on all 
+  `HeroDetail` components present inside the dashboard.
+  
+.l-main-section  
+:marked
+  ## Finished dashboard
+  
+  And thus, our dashboard component is now finished! It should function
+  like shown initially:
+  
+figure.image-display
+  img(src='/resources/images/devguide/structural-directives/dashboard-full.gif' alt="full dashboard")
++makeTabs(`
+  structural-directives/ts/src/app/hero-dashboard.component.ts,
+  structural-directives/ts/src/app/hero-dashboard.component.html`,
+  null, 
+  `hero-dashboard.component.ts,
+  hero-dashboard.component.html`)
+
+.l-main-section  
+:marked
+  ## Wrapping up
+  
+  That was a lot to take in! But we've finished this chapter richer for all
+  we've learned. Let's recap:
+  
+  - We saw how structural directives instantiate fresh copies of a template
+  - We created our own structural directive
+  - We learned the about light and shadow DOM
+  - We created the component that took projected light DOM content
+  - We stamped out copies of a light DOM template
+  - We interacted directly with components within our component

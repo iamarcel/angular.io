@@ -1,0 +1,8 @@
+{
+  "description": "Structural directives",
+  "files": ["!**/*.d.ts", "!**/*.js"],
+  "tags": [
+    "structural", "directives", "template", "projection", "ng-if",
+    "ng-switch", "ng-for"
+  ]
+}
