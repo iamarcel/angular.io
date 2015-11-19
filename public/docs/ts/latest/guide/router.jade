@@ -48,6 +48,17 @@ include ../../../../_includes/_util-fns
    is the value of the `id` parameter. The corresponding `HeroDetailComponent`
    will use that value to find and present the hero whose `id` is 42. 
    We'll learn more about route parameters later in this chapter.
+   
+.l-sub-section
+  :marked
+    (FS) `AppComponent` should have an abbreviated component decorator, because otherwise
+    the user will wonder if there is such as thing as a component that has no 
+    decorator, and that maybe other classes that are not components can receive
+    `RouteDefinition` decorators.
+  
+    Note about how multiple components might have routes (but that would be
+    talked about later) would be welcome.
+        
 :marked
   Now we know how the router gets its configuration.
   When the browser URL for this application becomes `/heroes`,
@@ -211,6 +222,9 @@ figure.image-display
   Here's a diagram of all application routing options:
 figure.image-display
   img(src='/resources/images/devguide/router/complete-nav.png' alt="Navigation diagram" )
+.l-sub-section
+  :marked
+    (FS) This image is displaying some controls (handles on the sub-image parts)
 :marked
   This app illustrates the router features we'll cover in this chapter
   
@@ -271,6 +285,18 @@ figure.image-display
   set the `href` value *exactly* as shown here. 
 
 +makeExample(`router/ts/src/index.html`,'base-href')(format=".")
+.l-sub-section
+  :marked
+    (FS) I couldn't quite get what the concrete example for the need of it was, after 
+    reading from the appendix. I also went back and read the 
+    [angular1 guide for $location](https://docs.angularjs.org/guide/$location), 
+    and the also [nobase error](https://docs.angularjs.org/error/$location/nobase)
+    and it helped a bit. 
+    
+    A side by side comparison of what would change (base tag, urls for routes, urls for resources) 
+    between PathLocationStrategy/HashLocationStrategy would help. Maybe also 
+    an example of what would happen when misconfigured. Routing problems
+    were hard to diagnose in angular 1.
 .l-sub-section
   :marked
     "HTML 5" style navigation is the Component Router default `LocationStrategy`. The router calls it the `PathLocationStrategy`.
@@ -488,6 +514,10 @@ figure.image-display
     We'll present the final result in the [Heroes App wrap-up](#heroes-app-wrap-up) for
     those readers who want to reconstruct the application as it stands at the end of
     this section.
+.l-sub-section
+  :marked
+    (FS) This is mentioned a couple of times, but still there is a lot of tutorial-esque 
+    indications and code samples.
 :marked
   ### New route definition with route parameter
   
@@ -523,6 +553,10 @@ figure.image-display
   browser URL like this:
 code-example(format="." language="bash").
   localhost:3002/src/#/hero/15
+.l-sub-section
+  :marked
+    (FS) Reader hasn't been shown how to switch to hash (#) style. End of chapter milestone
+    also seems to mention that this should be shown on this chapter.
 :marked
   If someone enters that URL into the browser address bar, the router should recognize the
   pattern and go to the same "Magenta" detail view.
