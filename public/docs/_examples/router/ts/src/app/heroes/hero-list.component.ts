@@ -20,13 +20,13 @@ import {Router}              from 'angular2/router';
 export class HeroListComponent implements OnInit {
   public heroes: Hero[];
   public selectedHero: Hero;
-  
+
   // #docregion ctor
   constructor(
     private _router: Router,
     private _service: HeroService) { }
   // #enddocregion ctor
-  onInit() {
+  ngOnInit() {
     this._service.getHeroes().then(heroes => this.heroes = heroes)
   }
   // #docregion select

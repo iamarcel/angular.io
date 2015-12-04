@@ -4,11 +4,11 @@
 import {Component, OnInit} from 'angular2/angular2';
 import {Crisis, CrisisService} from './crisis.service';
 import {RouteParams, Router} from 'angular2/router';
-// #docregion canDeactivate
+// #docregion ngCanDeactivate
 import {CanDeactivate, ComponentInstruction} from 'angular2/router';
 import {DialogService} from '../dialog.service';
 
-// #enddocregion canDeactivate
+// #enddocregion ngCanDeactivate
 import {ROUTE_NAMES} from './routes';
 
 @Component({
@@ -29,13 +29,13 @@ import {ROUTE_NAMES} from './routes';
   // #enddocregion template
   styles: ['input {width: 20em}']
 })
-// #docregion canDeactivate, cancel-save
+// #docregion ngCanDeactivate, cancel-save
 export class CrisisDetailComponent implements OnInit, CanDeactivate {
 
   public crisis: Crisis;
   public editName: string;
 
-// #enddocregion canDeactivate, cancel-save
+// #enddocregion ngCanDeactivate, cancel-save
   constructor(
     private _service: CrisisService,
     private _router: Router,
@@ -43,8 +43,8 @@ export class CrisisDetailComponent implements OnInit, CanDeactivate {
     private _dialog: DialogService
     ) { }
 
-  // #docregion onInit
-  onInit() {
+  // #docregion ngOnInit
+  ngOnInit() {
     let id = +this._routeParams.get('id');
     this._service.getCrisis(id).then(crisis => {
       if (crisis) {
@@ -55,15 +55,15 @@ export class CrisisDetailComponent implements OnInit, CanDeactivate {
       }
     });
   }
-  // #enddocregion onInit
-  
-  // #docregion canDeactivate
-  canDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+  // #enddocregion ngOnInit
+
+  // #docregion ngngCanDeactivate
+  routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
     return !this.crisis ||
            this.crisis.name === this.editName ||
            this._dialog.confirm('Discard changes?');
   }
-  // #enddocregion canDeactivate
+  // #enddocregion ngCanDeactivate
 
   // #docregion cancel-save
   cancel() {
@@ -81,12 +81,12 @@ export class CrisisDetailComponent implements OnInit, CanDeactivate {
   gotoCrises() {
     let route = this.crisis ?
       [ROUTE_NAMES.crisisList, {id: this.crisis.id}] :
-      [ROUTE_NAMES.crisisCenter];
+      [ROUTE_NAMES.default];
 
     this._router.navigate(route);
   }
   // #enddocregion gotoCrises
-// #docregion canDeactivate, cancel-save
+// #docregion ngCanDeactivate, cancel-save
 }
-// #enddocregion canDeactivate, cancel-save
+// #enddocregion ngCanDeactivate, cancel-save
 // #enddocregion

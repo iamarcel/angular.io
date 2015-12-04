@@ -1,0 +1,5 @@
+{
+  "description": "Router",
+  "files":["!**/*.d.ts",  "!**/*.js"],
+  "tags": ["router"]
+}

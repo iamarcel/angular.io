@@ -24,7 +24,7 @@ export class AddCrisisComponent implements CanDeactivate {
     private _router: Router,
     private _dialog: DialogService) { }
 
-  canDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
+  routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
     return !!this.editName.trim() ||
            this._dialog.confirm('Discard changes?');
   }
@@ -37,6 +37,6 @@ export class AddCrisisComponent implements CanDeactivate {
   }
 
   gotoCrises() {
-    this._router.navigate([ROUTE_NAMES.crisisCenter]);
+    this._router.navigate([ROUTE_NAMES.default]);
   }
 }

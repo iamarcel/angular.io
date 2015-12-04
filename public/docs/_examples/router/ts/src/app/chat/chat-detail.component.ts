@@ -23,7 +23,7 @@ export class ChatDetailComponent implements OnInit {
 
   constructor(private _service: ChatService) { }
 
-  onInit() {
+  ngOnInit() {
     this._service.getChat()
         .then(messages => this.messages = messages);
   };

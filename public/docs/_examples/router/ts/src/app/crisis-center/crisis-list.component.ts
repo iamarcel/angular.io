@@ -30,7 +30,7 @@ export class CrisisListComponent implements OnInit {
   }
   // #enddocregion isSelected
 
-  onInit() {
+  ngOnInit() {
     this._service.getCrises().then(crises => this.crises = crises);
   }
   // #docregion isSelected

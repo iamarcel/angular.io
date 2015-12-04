@@ -16,13 +16,14 @@ export const ROUTE_NAMES = {
   chat: 'Chat',
   // #docregion CC
   crisisCenter: 'CrisisCenter',
+  default: 'Default',
   heroes:   'Heroes',
   heroDetail: 'HeroDetail'
 }
 
 export var ROUTES:RouteDefinition[] = [
   // #docregion redirectTo
-  {path: '/',                  redirectTo: '/crisis-center/'},
+  {path: '/',                  redirectTo: [ROUTE_NAMES.crisisCenter, ROUTE_NAMES.default]},
   // #enddocregion redirectTo
   // #enddocregion CC
   /* what we think it will be

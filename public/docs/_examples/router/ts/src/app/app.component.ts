@@ -8,7 +8,7 @@ import {ROUTE_NAMES, ROUTES} from './routes';
 // #docregion template
   template: `
     <h1 class="title">Component Router</h1>
-    <a [router-link]="[routes.crisisCenter, routes.crisisCenter]">Crisis Center</a>
+    <a [router-link]="[routes.crisisCenter, routes.default]">Crisis Center</a>
     <a [router-link]="[routes.heroes]">Heroes</a>
     <a [router-link]="[routes.chat, routes.chat]">Chat</a>
     <router-outlet></router-outlet>

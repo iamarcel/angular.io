@@ -28,12 +28,12 @@ export class HeroDetailComponent implements OnInit  {
     private _service:HeroService){}
   // #enddocregion ctor
 
-  // #docregion onInit
-  onInit() {
+  // #docregion ngOnInit
+  ngOnInit() {
     let id = +this._routeParams.get('id');
     this._service.getHero(id).then(hero => this.hero = hero);
   }
-  // #enddocregion onInit
+  // #enddocregion ngOnInit
 
   // #docregion gotoHeroes
   gotoHeroes() {

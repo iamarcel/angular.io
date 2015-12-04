@@ -14,7 +14,7 @@ export const ROUTE_NAMES = {
 }
 
 export var ROUTES:RouteDefinition[] = [
-  {path: '/',                  redirectTo: '/crisis-center/'},
+  {path: '/',                  redirectTo: [ROUTE_NAMES.crisisCenter, 'Default']},
   //{path: '/chat/...',          name: ROUTE_NAMES.chat,         component: ChatComponent},
   {path: '/crisis-center/...', name: ROUTE_NAMES.crisisCenter, component: CrisisCenterComponent},
   {path: '/heroes',            name: ROUTE_NAMES.heroes,       component: HeroListComponent},
