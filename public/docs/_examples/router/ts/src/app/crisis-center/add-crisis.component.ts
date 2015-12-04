@@ -2,7 +2,6 @@ import {Component} from 'angular2/angular2';
 import {Crisis, CrisisService} from './crisis.service';
 import {DialogService} from '../dialog.service';
 import {CanDeactivate, ComponentInstruction, Router} from 'angular2/router';
-import {ROUTE_NAMES} from './routes';
 
 @Component({
   template: `
@@ -37,6 +36,6 @@ export class AddCrisisComponent implements CanDeactivate {
   }
 
   gotoCrises() {
-    this._router.navigate([ROUTE_NAMES.default]);
+    this._router.navigate(['CrisisCenter']);
   }
 }

@@ -1,8 +1,10 @@
 // #docregion
 import {Component}     from 'angular2/angular2';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
-import {ROUTES}        from './routes';
-import {CrisisService} from './crisis.service';
+
+import {CrisisListComponent}   from './crisis-list.component';
+import {CrisisDetailComponent} from './crisis-detail.component';
+import {CrisisService}         from './crisis.service';
 
 @Component({
   template:  `
@@ -12,7 +14,13 @@ import {CrisisService} from './crisis.service';
   directives: [RouterOutlet],
   providers:  [CrisisService]
 })
-@RouteConfig(ROUTES)
+// #docregion routes
+@RouteConfig([
+  {path:'/',         name: 'CrisisCenter', component: CrisisListComponent, useAsDefault: true},
+  {path:'/list/:id', name: 'CrisisList',   component: CrisisListComponent},
+  {path:'/:id',      name: 'CrisisDetail', component: CrisisDetailComponent}
+])
 export class CrisisCenterComponent { }
+// #enddocregion routes
 // #enddocregion
 //    <router-outlet name="add"></router-outlet>

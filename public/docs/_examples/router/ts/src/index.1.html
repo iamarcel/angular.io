@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<script>
+  var boot = 'app/boot'+''; // choices: '.1', '.2', ''
+</script>
 <!-- #docregion -->
 <html>
   <head>
@@ -17,7 +20,8 @@
       System.config({
         packages: {'app': {defaultExtension: 'js'}}
       });
-      System.import('app/boot').catch(console.log.bind(console));
+      // window.boot is for our testing; you should just use 'app/boot'
+      System.import(window.boot||'app/boot').catch(console.log.bind(console));
     </script>
   </head>
 

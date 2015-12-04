@@ -21,6 +21,13 @@ import {HeroDetailComponent}   from './heroes/hero-detail.component';
   `,
   directives: [ROUTER_DIRECTIVES]
 })
+// #enddocregion
+/*
+// #docregion route-config
+@Component({ ... })
+// #enddocregion route-config
+*/
+// #docregion
 // #docregion route-config
 @RouteConfig([
 // #docregion route-defs

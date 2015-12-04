@@ -1,7 +1,8 @@
 // #docregion
 import {Component} from 'angular2/angular2';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
-import {ROUTES} from './routes';
+import {ChatInitComponent}   from './chat-init.component';
+import {ChatDetailComponent} from './chat-detail.component';
 
 import {ChatService} from './chat.service';
 
@@ -15,5 +16,8 @@ import {ChatService} from './chat.service';
   directives: [RouterOutlet],
   providers: [ChatService]
 })
-@RouteConfig(ROUTES)
+@RouteConfig([
+  { path: '/',        name: 'Chat',       component: ChatInitComponent, useAsDefault: true },
+  { path: '/details', name: 'ChatDetail', component: ChatDetailComponent }
+])
 export class ChatComponent { }

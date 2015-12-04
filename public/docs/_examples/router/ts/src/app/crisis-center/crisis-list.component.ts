@@ -4,7 +4,6 @@
 import {Component, OnInit} from 'angular2/angular2';
 import {Crisis, CrisisService} from './crisis.service';
 import {Router, RouteParams} from 'angular2/router';
-import {ROUTE_NAMES} from './routes';
 
 @Component({
   template: `
@@ -40,9 +39,7 @@ export class CrisisListComponent implements OnInit {
 
   // #docregion select
   onSelect(crisis: Crisis) {
-    this._router.navigate(
-      [ROUTE_NAMES.crisisDetail, { id: crisis.id }]
-    );
+    this._router.navigate( ['CrisisDetail', { id: crisis.id }]  );
   }
   // #enddocregion select
 }

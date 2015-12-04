@@ -14,11 +14,10 @@ export const ROUTE_NAMES = {
 }
 
 export var ROUTES:RouteDefinition[] = [
-  {path: '/',                  redirectTo: [ROUTE_NAMES.crisisCenter, 'Default']},
-  //{path: '/chat/...',          name: ROUTE_NAMES.chat,         component: ChatComponent},
-  {path: '/crisis-center/...', name: ROUTE_NAMES.crisisCenter, component: CrisisCenterComponent},
-  {path: '/heroes',            name: ROUTE_NAMES.heroes,       component: HeroListComponent},
-  {path: '/hero/:id',          name: ROUTE_NAMES.heroDetail,   component: HeroDetailComponent}
+  //{path: '/chat/...',          name: 'Chat',         component: ChatComponent},
+  {path: '/crisis-center/...', name: 'CrisisCenter', component: CrisisCenterComponent, useAsDefault: true},
+  {path: '/heroes',            name: 'Heroes',       component: HeroListComponent},
+  {path: '/hero/:id',          name: 'HeroDetail',   component: HeroDetailComponent}
 ];
 
 insertChatAsyncRoute()
@@ -26,7 +25,7 @@ insertChatAsyncRoute()
 function insertChatAsyncRoute() {
   let aroute = {
     path: '/chat/...',
-    name: ROUTE_NAMES.chat,
+    name: 'Chat',
     loader: () => LoadComponentAsync('Chat', 'app/chat/chat.component')
   };
 

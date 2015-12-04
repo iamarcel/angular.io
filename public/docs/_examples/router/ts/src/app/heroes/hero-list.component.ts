@@ -26,14 +26,13 @@ export class HeroListComponent implements OnInit {
     private _router: Router,
     private _service: HeroService) { }
   // #enddocregion ctor
+  
   ngOnInit() {
     this._service.getHeroes().then(heroes => this.heroes = heroes)
   }
   // #docregion select
   onSelect(hero: Hero) {
-    this._router.navigate(
-      ['HeroDetail', { id: hero.id }]
-    );
+    this._router.navigate( ['HeroDetail', { id: hero.id }] );
   }
   // #enddocregion select
 }

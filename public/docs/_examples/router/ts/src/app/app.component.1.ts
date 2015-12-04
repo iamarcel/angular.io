@@ -4,6 +4,7 @@
 // #docregion
 import {Component} from 'angular2/angular2';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
+
 import {CrisisListComponent}   from './crisis-list.component';
 import {HeroListComponent}     from './hero-list.component';
 
@@ -19,6 +20,13 @@ import {HeroListComponent}     from './hero-list.component';
 // #enddocregion template
   directives: [ROUTER_DIRECTIVES]
 })
+// #enddocregion
+/*
+// #docregion route-config
+@Component({ ... })
+// #enddocregion route-config
+*/
+// #docregion
 // #docregion route-config
 @RouteConfig([
 // #docregion route-defs

@@ -34,31 +34,20 @@ include ../../../../_includes/_util-fns
   applied to a host component.
 
   In this example, we configure the `AppComponent` with three route definitions
-+makeExample('router/ts/src/app/app.component.2.ts', 'route-config')
++makeExample('router/ts/src/app/app.component.2.ts', 'route-config', 'app.component.ts (excerpt)')
 :marked
 
 .l-sub-section
- :marked
-   There are several flavors of `RouteDefinition`. 
-   The most common by far is the named **`Route`** which maps a URL path to a Component
-   
-   The `name` field is the name of the `Route`. The name must be spelled in Title case.
-    
-   The `:id` in the third route is a token for a route parameter. In a URL such as `/hero/42`, "42"
-   is the value of the `id` parameter. The corresponding `HeroDetailComponent`
-   will use that value to find and present the hero whose `id` is 42. 
-   We'll learn more about route parameters later in this chapter.
-   
-.l-sub-section
   :marked
-    (FS) `AppComponent` should have an abbreviated component decorator, because otherwise
-    the user will wonder if there is such as thing as a component that has no 
-    decorator, and that maybe other classes that are not components can receive
-    `RouteDefinition` decorators.
-  
-    Note about how multiple components might have routes (but that would be
-    talked about later) would be welcome.
-        
+    There are several flavors of `RouteDefinition`. 
+    The most common by far is the named **`Route`** which maps a URL path to a Component
+    
+    The `name` field is the name of the `Route`. The name must be spelled in Title case.
+    
+    The `:id` in the third route is a token for a route parameter. In a URL such as `/hero/42`, "42"
+    is the value of the `id` parameter. The corresponding `HeroDetailComponent`
+    will use that value to find and present the hero whose `id` is 42. 
+    We'll learn more about route parameters later in this chapter.
 :marked
   Now we know how the router gets its configuration.
   When the browser URL for this application becomes `/heroes`,
@@ -222,9 +211,6 @@ figure.image-display
   Here's a diagram of all application routing options:
 figure.image-display
   img(src='/resources/images/devguide/router/complete-nav.png' alt="Navigation diagram" )
-.l-sub-section
-  :marked
-    (FS) This image is displaying some controls (handles on the sub-image parts)
 :marked
   This app illustrates the router features we'll cover in this chapter
   
@@ -272,7 +258,7 @@ figure.image-display
   for navigation. Thanks to `pushState`, we can make our in-app URL paths look the way we want them to
   look, e.g. `localhost:3000/crisis-center`. Our in-app URLs can be indistinguishable from server URLs.
 
-  Modern HTML 5 browsers for the first to support `pushState` which is why many people refer to these URLs as
+  Modern HTML 5 browsers were the first to support `pushState` which is why many people refer to these URLs as
   "HTML 5 style" URLs.
 
   We must **add a [&lt;base href> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base) tag** 
@@ -287,25 +273,9 @@ figure.image-display
 +makeExample(`router/ts/src/index.html`,'base-href')(format=".")
 .l-sub-section
   :marked
-    (FS) I couldn't quite get what the concrete example for the need of it was, after 
-    reading from the appendix. I also went back and read the 
-    [angular1 guide for $location](https://docs.angularjs.org/guide/$location), 
-    and the also [nobase error](https://docs.angularjs.org/error/$location/nobase)
-    and it helped a bit. 
-    
-    A side by side comparison of what would change (base tag, urls for routes, urls for resources) 
-    between PathLocationStrategy/HashLocationStrategy would help. Maybe also 
-    an example of what would happen when misconfigured. Routing problems
-    were hard to diagnose in angular 1.
-.l-sub-section
-  :marked
-    "HTML 5" style navigation is the Component Router default `LocationStrategy`. The router calls it the `PathLocationStrategy`.
-    
-    We *can* switch to the older, "hash (#)" style that we used to see before browsers supported `history.pushState`
-    Angular calls this the `HashLocationStrategy`.
-    
-    Learn why "HTML 5" style is preferred, how to adjust its behavior, and how to switch to the `HashLocationStrategy`
-    if necessary in the [Browser URL Styles](#browser-url-styles) appendix below. 
+    HTML 5 style navigation is the Component Router default.
+    Learn why "HTML 5" style is preferred, how to adjust its behavior, and how to switch to the 
+    older hash (#) style if necessary in the [Browser URL Styles](#browser-url-styles) appendix below. 
     We'll also suggest what to do if you cannot add the `<base href>` to the host web page.
 :marked
   ### Booting with the router
@@ -454,7 +424,7 @@ figure.image-display
 :marked
   ## Milestone #2: The Heroes Feature
   
-  We've seen how to navigate with using the `RouterLink` Directive to individual components.
+  We've seen how to navigate using the `RouterLink` directive.
   
   Now we'll learn some new tricks such as how to
   * organize our app into "feature areas"
@@ -510,14 +480,6 @@ figure.image-display
   :marked
     This isn't a tutorial and we're not about to review every step nor every line of code. 
     We're concentrating on routing and that's the code we'll discuss.
-    
-    We'll present the final result in the [Heroes App wrap-up](#heroes-app-wrap-up) for
-    those readers who want to reconstruct the application as it stands at the end of
-    this section.
-.l-sub-section
-  :marked
-    (FS) This is mentioned a couple of times, but still there is a lot of tutorial-esque 
-    indications and code samples.
 :marked
   ### New route definition with route parameter
   
@@ -552,11 +514,7 @@ figure.image-display
   If we tell the router to navigate to the detail component and display "Magenta", we expect her `id` (15) to appear in the
   browser URL like this:
 code-example(format="." language="bash").
-  localhost:3002/src/#/hero/15
-.l-sub-section
-  :marked
-    (FS) Reader hasn't been shown how to switch to hash (#) style. End of chapter milestone
-    also seems to mention that this should be shown on this chapter.
+  localhost:3002/src/hero/15
 :marked
   If someone enters that URL into the browser address bar, the router should recognize the
   pattern and go to the same "Magenta" detail view.
@@ -609,8 +567,8 @@ code-example(format="." language="bash").
 +makeExample(`router/ts/src/app/heroes/hero-detail.component.ts`,'ctor')
 :marked
   The component holds the `RouteParams` service in a private variable and refers to it later when Angular
-  calls the component's `onInit` method.
-+makeExample(`router/ts/src/app/heroes/hero-detail.component.ts`,'onInit')
+  calls the component's `ngOnInit` method.
++makeExample(`router/ts/src/app/heroes/hero-detail.component.ts`,'ngOnInit')
 :marked
   There we ask the `RouteParams` service for the parameter by name. The returned value is always a string 
   (because it came from the URL). 
@@ -619,9 +577,9 @@ code-example(format="." language="bash").
   the `HeroService` to fetch the hero with that `id`.
 .l-sub-section
   :marked
-    Angular calls this `onInit` method shortly after creating an instance of the `HeroDetailComponent`.
+    Angular calls the `ngOnInit` method shortly after creating an instance of the `HeroDetailComponent`.
     
-    We might have put this logic inside the constructor rather than in the `onInit` method.
+    We might have put this logic inside the constructor rather than in the `ngOnInit` method.
     We discuss why in an the [OnInit appendix](#onInit) below.
 :marked
   ### Navigating back to the list component
@@ -708,13 +666,7 @@ code-example(format="." language="bash").
   * When we return to the list from the detail, the previously edited crisis should be pre-selected in the list.
   That will require passing information *back* to the list from the detail.
   
-  There are also some lingering annoyances in the "Heroes" implementation that we can cure in the "Crisis Center".
-  
-  * We refer to route names with string values ('CrisisCenter'); magic strings are bad.
-  
-  * Route definitions mix with component template and logic in the same `AppComponent` file.
-  That's OK while we have three routes. It will get ugly as the number of routes grow. Almost none of that growth would
-  change the way the `AppComponent` looks or behaves.
+  There are also a few lingering annoyances in the "Heroes" implementation that we can cure in the "Crisis Center".
   
   * We currently register every route of every view at the highest level of the application.
   If we expand the "Crisis Center" with a 100 new views, we'll make 100 changes to the
@@ -782,49 +734,14 @@ code-example(format="." language="bash").
   Its template is dead simple: no content, no links, just a `<router-outlet>` for the "Crisis Center"
   views produced by its child router. 
   
-  Ther's no selector either. We don't embed this component in a parent template. We navigate to it
+  There's no selector either. We don't embed this component in a parent template. We navigate to it
   from the outside, via a parent router (more on that soon).
   
   We're adding the `CrisisService` to the component's providers instead of in `boot.ts`,
   making it available to any "Crisis Center" component *and nowhere else*. 
   
   The `@RouteConfig` decorator that adorns the component class creates a child router hosted by this component.
-  
-  Most importantly, we no longer create a route definitions array in the argument to `@RouteConfig`.
-  We `import` it instead from a sibling `routes` file in the `crisis-center` folder.
-  
-  ### The Crisis Center *routes*
-  
-  Here's that `routes` file:
 
-+makeExample(`router/ts/src/app/crisis-center/routes.ts`,null, 'crisis-center/routes.ts')
-:marked
-  Observations:
-    * We `import` the `RouteDefinition` symbol from the router library so 
-    we can have TypeScript type support as we define routes.
-    
-    * We `import` symbols for just those Crisis Center components involved in routing.
- 
-    * We store the route names in an exported constant `ROUTE_NAMES` and reference them in our route definitions. 
-    Elsewhere we'll use this constant, rather than magic strings, to refer to named routes.
-    
-    * We create and export a `ROUTES` array with the Crisis Center route definitions. 
-    It's the same array we would have created as a parameter to the `@RouteConfig` 
-    decorating `CrisisCenterComponent`. We're creating it here instead.
-    
-    * We can expand this file with more routes as the Crisis Center evolves and we won't have to
-    touch the `CrisisCenterComponent` or the `AppComponent` shells.
-
-  ### *ROUTE_NAMES* in the *CrisisListComponent*
-   Both the `HeroListComponent` and the `CrisisListComponent` navigate to the detail views
-  when the user selects an item from the list. Here we list their `onSelect` methods, side-by-side,
-  to see the effect of using `ROUTE_NAMES`  
-+makeTabs(
-  `router/ts/src/app/crisis-center/crisis-list.component.ts,
-   router/ts/src/app/heroes/hero-list.component.ts`,
-   'select, select', 
-   'crisis-list.component.ts, hero-list.component.ts')
-:marked
   ### Smarter *CrisisDetailComponent*
   
   ### Cancel and Save
@@ -850,9 +767,6 @@ code-example(format=".").
 +makeExample(`router/ts/src/app/crisis-center/crisis-detail.component.ts`, 'gotoCrises',
  'crisis-detail.component.ts (excerpt)')
 :marked
- [Routes]
-+makeExample(`router/ts/src/app/crisis-center/routes.ts`, 'routes')
-:marked
   [EXPLANATION]
 +makeExample(`router/ts/src/app/crisis-center/crisis-list.component.ts`, 'isSelected',
  'crisis-list.component.ts (excerpt)')
@@ -863,27 +777,6 @@ code-example(format=".").
 :marked
 .alert.is-critical RESUME WORK HERE ON THE CRISIS CENTER VERSION! The HTML <base> element specifies the base URL to use for all relative URLs contained within a document. There can be only one <base> element in a document. 
 :marked
-  ### Refactor Application Routes to *app/routes*
-  Let's create the routes in their own `app/routes.ts` file. 
-  We'll get rid of the route magic strings at the same time.
-
-+makeExample(`router/ts/src/app/routes.ts`,'CC', 'app/routes.ts')
-:marked
-  Observations:
-    
-    * The component `import` statements we copied directly from `app.component.ts`
-    
-    * We `import` the `RouteDefinition` symbol from the router library so 
-    we get TypeScript type support as we add routes.
-    
-    * We pulled the magic string route names into the exported constant `ROUTE_NAMES` and use them in our route definitions. 
-    We'll use this constant elsewhere in the app when refering to named routes.
-    
-    * We create and export a `ROUTES` array with the same route definitions
-    we were passing to the `@RouteConfig` decorater in `app.component.ts`.
-    
-    * We added a redirect route.
-
   ### Redirecting to "Crisis Center`
 
 
@@ -925,7 +818,7 @@ code-example(format=".").
 .alert.is-critical Should remove app.component.4.ts based example (next) when we know what's what
 +makeExample(`router/ts/src/app/app.component.4.ts`, 'chat-outlet', 'app/app.component.ts')
 .alert.is-critical Should be able to project from app.component.ts like this
-+makeExample(`router/ts/src/app/app.component.ts`, 'template', 'app/app.component.ts')
++makeExample(`router/ts/src/app/app.component.ts`, 'template', 'app/app.component.ts (excerpt)')
 :marked
   The name of the outlet must be unique to the component. You could reuse the name across
   different components, so you don't have to worry about collisions.
@@ -1129,8 +1022,38 @@ code-example(format=".", language="bash").
    chat-detail.component.ts,
    chat.service.ts,            
   `)
- 
- <a name="browser-url-styles"></a>
+
+<a id="onInit"></a>
+.l-main-section
+:marked
+  ## Appendix: Why use an *ngOnInit* method
+
+  We implemented an `ngOnInit` method in many of our Component classes. 
+  We did so, for example, in the [HeroDetailComponent](#hero-detail-ctor).
+  We might have put the `ngOnInit` logic inside the constructor instead. We didn't for a reason. The reason is *testability*.
+  
+  A constructor that has major side-effects can be difficult to test because it starts doing things as soon as
+  we create a test instance. In this case, it might have made a request to a remote server, something it shouldn't
+  do under test. It may even be impossible to reach the server in the test environment.
+  
+  The better practice is to limit what the constructor can do. Mostly it should stash parameters in
+  local variables and perform simple instance configuration.
+  
+  Yet we want an instance of this class to get the hero data from the `HeroService` soon after it is created.
+  How do we ensure that happens if not in the constructor?
+  
+  Angular detects when a component has certain lifecycle methods like 
+  [ngOnInit](https://angular.io/docs/ts/latest/api/core/OnInit-interface.html) and 
+  [ngOnDestroy](https://angular.io/docs/ts/latest/api/core/OnDestroy-interface.html) and calls them
+  at the appropriate moment.
+  
+  Angular will call `ngOnInit` when we navigate to the `HeroDetailComponent`, we'll get the `id` from the `RouteParams`
+  and ask the server for the hero with that `id`.
+  
+  We too can call that `ngOnInit` method in our tests if we wish ... after taking control of the injected
+  `HeroService` and (perhaps) mocking it.
+
+<a name="browser-url-styles"></a>
 .l-main-section
 :marked
   ## Appendix: Browser URL styles
@@ -1227,34 +1150,3 @@ code-example(format=".", language="bash").
   `Location` and `HashLocationStrategy` symbols from the router, 
   then providing that strategy in the call to `bootstrap`:
 +makeExample('router/ts/src/app/boot.2.ts', 'hash-strategy')
-
-
-<a id="onInit"></a>
-.l-main-section
-:marked
-  ## Appendix: Why use an *OnInit* method
-
-  We implemented an `onInit` method in many of our Component classes. 
-  We did so, for example, in the [HeroDetailComponent](#hero-detail-ctor).
-  We might have put the `onInit` logic inside the constructor instead. We didn't for a reason. The reason is *testability*.
-  
-  A constructor that has major side-effects can be difficult to test because it starts doing things as soon as
-  we create a test instance. In this case, it might have made a request to a remote server, something it shouldn't
-  do under test. It may even be impossible to reach the server in the test environment.
-  
-  The better practice is to limit what the constructor can do. Mostly it should stash parameters in
-  local variables and perform simple instance configuration.
-  
-  Yet we want an instance of this class to get the hero data from the `HeroService` soon after it is created.
-  How do we ensure that happens if not in the constructor?
-  
-  Angular detects when a component has certain lifecycle methods like 
-  [onInit](https://angular.io/docs/ts/latest/api/core/OnInit-interface.html) and 
-  [onDestroy](https://angular.io/docs/ts/latest/api/core/OnDestroy-interface.html) and calls them
-  at the appropriate moment.
-  
-  Angular will call `onInit` when we navigate to the `HeroDetailComponent`, we'll get the `id` from the `RouteParams`
-  and ask the server for the hero with that `id`.
-  
-  We too can call that `onInit` method in our tests if we wish ... after taking control of the injected
-  `HeroService` and (perhaps) mocking it.

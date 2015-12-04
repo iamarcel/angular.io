@@ -9,7 +9,6 @@ import {CanDeactivate, ComponentInstruction} from 'angular2/router';
 import {DialogService} from '../dialog.service';
 
 // #enddocregion ngCanDeactivate
-import {ROUTE_NAMES} from './routes';
 
 @Component({
   // #docregion template
@@ -57,13 +56,13 @@ export class CrisisDetailComponent implements OnInit, CanDeactivate {
   }
   // #enddocregion ngOnInit
 
-  // #docregion ngngCanDeactivate
+  // #docregion canDeactivate
   routerCanDeactivate(next: ComponentInstruction, prev: ComponentInstruction) {
     return !this.crisis ||
            this.crisis.name === this.editName ||
            this._dialog.confirm('Discard changes?');
   }
-  // #enddocregion ngCanDeactivate
+  // #enddocregion canDeactivate
 
   // #docregion cancel-save
   cancel() {
@@ -79,9 +78,8 @@ export class CrisisDetailComponent implements OnInit, CanDeactivate {
 
   // #docregion gotoCrises
   gotoCrises() {
-    let route = this.crisis ?
-      [ROUTE_NAMES.crisisList, {id: this.crisis.id}] :
-      [ROUTE_NAMES.default];
+    let route =
+      ['CrisisList', this.crisis ? {id: this.crisis.id} : {}]
 
     this._router.navigate(route);
   }
