@@ -1,7 +1,7 @@
 // #docplaster
 
 // #docregion
-import {Component, OnInit} from 'angular2/angular2';
+import {Component, OnInit} from 'angular2/core';
 import {Crisis, CrisisService} from './crisis.service';
 import {RouteParams, Router} from 'angular2/router';
 // #docregion ngCanDeactivate

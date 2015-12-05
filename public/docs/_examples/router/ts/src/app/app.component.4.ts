@@ -1,10 +1,10 @@
 /* Fourth Chat version */
-import {Component} from 'angular2/angular2';
+import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
 // #docregion chat-import
 import {ChatComponent}         from './chat/chat.component';
-import {CrisisCenterComponent} from './crisis-center/crisis-list.component';
+import {CrisisCenterComponent} from './crisis-center/crisis-center.component';
 import {HeroListComponent}     from './heroes/hero-list.component';
 import {HeroDetailComponent}   from './heroes/hero-detail.component';
 // #enddocregion chat-import

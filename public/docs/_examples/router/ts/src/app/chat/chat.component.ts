@@ -1,5 +1,5 @@
 // #docregion
-import {Component} from 'angular2/angular2';
+import {Component} from 'angular2/core';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
 import {ChatInitComponent}   from './chat-init.component';
 import {ChatDetailComponent} from './chat-detail.component';

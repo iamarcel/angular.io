@@ -1,6 +1,6 @@
 // TODO: Feature Componetized like HeroCenter
 // #docregion
-import {Component, OnInit}   from 'angular2/angular2';
+import {Component, OnInit}   from 'angular2/core';
 import {Hero, HeroService}   from './hero.service';
 import {Router}              from 'angular2/router';
 
@@ -26,7 +26,7 @@ export class HeroListComponent implements OnInit {
     private _router: Router,
     private _service: HeroService) { }
   // #enddocregion ctor
-  
+
   ngOnInit() {
     this._service.getHeroes().then(heroes => this.heroes = heroes)
   }

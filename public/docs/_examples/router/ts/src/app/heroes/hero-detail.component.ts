@@ -1,5 +1,5 @@
 // #docregion
-import {Component,  OnInit}  from 'angular2/angular2';
+import {Component,  OnInit}  from 'angular2/core';
 import {Hero, HeroService}   from './hero.service';
 import {RouteParams, Router} from 'angular2/router';
 

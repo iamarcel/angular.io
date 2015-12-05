@@ -5,7 +5,7 @@
 
 // #docregion v2
 // #docregion hash-strategy
-import {bootstrap}         from 'angular2/angular2';
+import {bootstrap}         from 'angular2/platform/browser';
 import {ROUTER_PROVIDERS}  from 'angular2/router';
 import {AppComponent}      from './app.component';
 // #enddocregion hash-strategy
@@ -15,7 +15,7 @@ import {HeroService}       from './heroes/hero.service';
 // #docregion hash-strategy
 
 // Add these symbols to register a `LocationStrategy`
-import {provide}           from 'angular2/angular2';
+import {provide}           from 'angular2/core';
 import {LocationStrategy,
         HashLocationStrategy} from 'angular2/router';
 // #enddocregion hash-strategy

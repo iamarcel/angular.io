@@ -1,5 +1,5 @@
 // #docregion
-import {Injectable} from 'angular2/angular2';
+import {Injectable} from 'angular2/core';
 
 export class Message {
   constructor(public content: string, public author: string) { }

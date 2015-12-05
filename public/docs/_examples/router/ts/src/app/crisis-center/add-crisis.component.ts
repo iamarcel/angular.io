@@ -1,4 +1,4 @@
-import {Component} from 'angular2/angular2';
+import {Component} from 'angular2/core';
 import {Crisis, CrisisService} from './crisis.service';
 import {DialogService} from '../dialog.service';
 import {CanDeactivate, ComponentInstruction, Router} from 'angular2/router';
