@@ -1,10 +1,10 @@
 // #docplaster
 // #docregion
 // #docregion unless-declaration
-import {Directive, Input} from 'angular2/angular2';
+import {Directive, Input} from 'angular2/core';
 
 // #enddocregion unless-declaration
-import {TemplateRef, ViewContainerRef} from 'angular2/angular2';
+import {TemplateRef, ViewContainerRef} from 'angular2/core';
 
 // #docregion unless-declaration
 @Directive({ selector: '[my-unless]' })

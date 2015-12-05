@@ -1,12 +1,14 @@
 // #docregion
-import {Component, Input, Output} from 'angular2/angular2';
+import {Component, Input, Output} from 'angular2/core';
+
+let nextId = 1;
 
 @Component({
   selector: 'heavy-loader',
   template: '<span>heavy loader #{{id}} on duty!</span>'
 })
 export class HeavyLoaderComponent {
-  @Input() id: string;
+  id = nextId++;
   @Input() logs: string[];
 
   ngOnInit() {

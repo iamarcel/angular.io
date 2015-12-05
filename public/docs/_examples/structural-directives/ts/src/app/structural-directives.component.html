@@ -3,70 +3,61 @@
 <h1>Structural Directives</h1>
 
 <!-- #docregion structural-directives -->
+<!-- #docregion asterisk -->
 <div *ng-if="hero">{{hero}}</div>
 <div *ng-for="#hero of heroes">{{hero}}</div>
+<!-- #enddocregion asterisk -->
+<!-- #docregion ngSwitch -->
 <div [ng-switch]="status">
   <template [ng-switch-when]="'in-mission'">In Mission</template>
   <template [ng-switch-when]="'ready'">Ready</template>
   <template ng-switch-default>Unknown</template>
 </div>
+<!-- #enddocregion ngSwitch -->
 <!-- #enddocregion structural-directives -->
 
 <hr>
 
 <button
-  (click)="isInDOM = !isInDOM"
-  [style.background] = "isInDOM ? 'orangered': 'lightgreen'"
+  (click)="condition = !condition"
+  [style.background] = "condition ? 'orangered': 'lightgreen'"
   >
-  Set 'isInDOM' to {{isInDOM ? 'False': 'True'}}
+  Set 'condition' to {{condition ? 'False': 'True'}}
 </button>
 
-<!-- #docregion ng-if -->
-<p *ng-if="isInDOM">
-  isInDOM is true and ng-if is true.
+<!-- #docregion ngIf -->
+<p *ng-if="condition">
+  condition is true and ngIf is true.
 </p>
-<p *ng-if="!isInDOM">
-  isInDOM is false and ng-if is false.
+<p *ng-if="!condition">
+  condition is false and ngIf is false.
 </p>
-<!-- #enddocregion ng-if -->
-<!-- #docregion my-unless-->
-<p *my-unless="isInDOM">
-  isInDOM is false and my-unless is true.
+<!-- #enddocregion ngIf -->
+<!-- #docregion myUnless-->
+<p *my-unless="condition">
+  condition is false and myUnless is true.
 </p>
 
-<p *my-unless="!isInDOM">
-  isInDOM is true and my-unless is false.
+<p *my-unless="!condition">
+  condition is true and myUnless is false.
 </p>
-<!-- #enddocregion my-unless-->
+<!-- #enddocregion myUnless-->
 
 <hr>
 
 <!-- #docregion message-log -->
-<div>
-  <button (click)="isInDOM = !isInDOM">if | !if</button>
-
-  <heavy-loader
-    *ng-if="isInDOM"
-    [id]="1" [logs]="logs">
-  </heavy-loader>
-
-</div>
-
-<div>
+<div><!-- Visibility -->
   <button (click)="isVisible = !isVisible">show | hide</button>
-
-  <heavy-loader
-    [style.display]="isVisible ? 'inline' : 'none'"
-    [id]="2" [logs]="logs">
-  </heavy-loader>
-
+  <heavy-loader [style.display]="isVisible ? 'inline' : 'none'" [logs]="logs"></heavy-loader>
 </div>
-<div>
-  <h4>heavy-loader initialization log:</h4>
-  <div *ng-for="#message of logs">
-    {{ message }}
-  </div>
+
+<div><!-- NgIf -->
+  <button (click)="condition = !condition">if | !if</button>
+  <heavy-loader *ng-if="condition" [logs]="logs"></heavy-loader>
 </div>
+
+<h4>heavy-loader log:</h4>
+<div *ng-for="#message of logs">{{message}}</div>
 <!-- #enddocregion message-log -->
 
 <hr>
@@ -87,41 +78,32 @@
 
 <hr>
 
-<!-- #docregion ng-if-template -->
+<!-- #docregion ngIf-template -->
 <!-- Examples (A) and (B) are the same -->
-<!-- (A) *ng-if paragraph -->
-<p *ng-if="isInDOM">
+<!-- (A) *ngIf paragraph -->
+<p *ng-if="condition">
   Our heroes are true!
 </p>
 
-<!-- (B) [ng-if] with template -->
-<template [ng-if]="isInDOM">
+<!-- (B) [ngIf] with template -->
+<template [ng-if]="condition">
   <p>
     Our heroes are true!
   </p>
 </template>
-<!-- #enddocregion ng-if-template -->
+<!-- #enddocregion ngIf-template -->
 
 <hr>
 
-<!-- #docregion ng-for-template -->
+<!-- #docregion ngFor-template -->
 <!-- Examples (A) and (B) are the same -->
 
-<!-- (A) *ng-for div -->
+<!-- (A) *ngFor div -->
 <div *ng-for="#hero of heroes">{{ hero }}</div>
 
-<!-- (B) ng-for with template -->
+<!-- (B) ngFor with template -->
 <template ng-for #hero [ng-for-of]="heroes">
   <div>{{ hero }}</div>
 </template>
-<!-- #enddocregion ng-for-template -->
-
-<hr>
-
-<!-- #docregion my-component-1 -->
-<my-component>
-  <p>Declared Content; Kiss it Goodbye!</p>
-</my-component>
-<!-- #enddocregion my-component-1 -->
-
+<!-- #enddocregion ngFor-template -->
 <!-- #enddocregion -->

@@ -43,15 +43,17 @@
     "title": "Attribute Directives",
     "intro": "Attribute directives attach behavior to elements."
   },
+  
+  "structural-directives": {
+    "title": "Structural Directives",
+    "intro": "Angular has a powerful template engine that lets us easily manipulate the DOM structure of our elements."
+  },  
 
   "hierarchical-dependency-injection": {
     "title": "Hierarchical Injectors",
     "intro": "Angular's hierarchical dependency injection system supports nested injectors in parallel with the component tree."
   },
-  "structural-directives": {
-    "title": "Structural Directives",
-    "intro": "Angular has a powerful template and transclusion engine that lets you easily manipulate the DOM structure of your elements."
-  },
+
   "glossary": {
     "title": "Glossary",
     "intro": "Brief definitions of the most important words in the Angular 2 vocabulary"
