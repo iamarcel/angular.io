@@ -109,6 +109,18 @@ module.exports = new Package('angular.io', [basePackage, targetPackage, cheatshe
     pathTemplate: '../guide/cheatsheet.json',
     outputPathTemplate: '${path}'
   });
+
+  computePathsProcessor.pathTemplates.push({
+    docTypes: ['cheatsheet-data'],
+    pathTemplate: '../guide/cheatsheet.json',
+    outputPathTemplate: '${path}'
+  });
+
+  computePathsProcessor.pathTemplates.push({
+    docTypes: ['cheatsheet-data'],
+    pathTemplate: '../guide/cheatsheet.json',
+    outputPathTemplate: '${path}'
+  });
 })
 
 .config(function(getLinkInfo) {

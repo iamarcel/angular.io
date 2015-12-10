@@ -14,9 +14,13 @@ module.exports = function createCheatsheetDoc(createDocMessage, renderMarkdown, 
         id: 'cheatsheet',
         aliases: ['cheatsheet'],
         docType: 'cheatsheet-data',
+<<<<<<< HEAD
         sections: [],
         version: versionInfo,
         currentEnvironment: currentEnvironment
+=======
+        sections: []
+>>>>>>> 0b45f51... chore(doc-gen): allow dart cheatsheet to be generated
       };
 
       docs = docs.filter(function(doc) {

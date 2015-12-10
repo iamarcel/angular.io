@@ -1,0 +1,5 @@
+{
+  "description": "User Input",
+  "files": ["!**/*.d.ts", "!*.json"],
+  "tags": ["user input"]
+}
