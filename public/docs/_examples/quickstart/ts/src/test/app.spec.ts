@@ -5,7 +5,7 @@ import { AppComponent } from '../app/app';
 type TCB = TestComponentBuilder;
 
 describe('AppComponent', () => {
-  beforeEachProviders(() => [Type]);
+  beforeEachProviders(() => <Type[]> []);
 
   it('should have correct text', injectAsync([TestComponentBuilder], (tcb: TCB) => {
     return tcb.createAsync(AppComponent).then((fixture) => {
