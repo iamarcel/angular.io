@@ -4,11 +4,7 @@ module.exports = {
 
 var _rxRules = {
   basehref: {
-<<<<<<< HEAD
     from: /<base href=".*"[/]?>/,
-=======
-    from: /<base href=".*">/,
->>>>>>> chore(devguide-tooling): update package.json/tsconfig/plunkerblder for alpha.51
     to: '<script>document.write(\'<base href="\' + document.location + \'" />\');</script>'
   },
   script: {
