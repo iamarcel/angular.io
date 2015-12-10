@@ -1,6 +1,6 @@
 import { iit,it, ddescribe, describe, expect, injectAsync, TestComponentBuilder, beforeEachProviders } from 'angular2/testing';
-import { provide, Type } from 'angular2/angular2';
-import { AppComponent } from 'app';
+import { provide } from 'angular2/core';
+import { AppComponent } from './app';
 
 type TCB = TestComponentBuilder;
 
