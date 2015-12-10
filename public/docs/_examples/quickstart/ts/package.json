@@ -4,18 +4,33 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc -p src -w",
-    "start": "live-server --open=src"
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "start": "live-server --open=src",
+    "both": "concurrent \"npm run tsc:w\" \"npm run start\" ",
+    "test": "karma start karma.conf.js",
+    "tsc-and-test": "npm run tsc && npm run test",
+    "show-test-results": "start testResults.html"
+
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "angular2": "2.0.0-alpha.44",
-    "systemjs": "0.19.2"
+    "systemjs": "^0.19.4"
   },
   "devDependencies": {
     "live-server": "^0.8.1",
-    "typescript": "^1.6.2"
+    "typescript": "^1.6.2",
+    "angular2": "2.0.0-alpha.44",
+    "jasmine": "2.3.2",
+    "karma": "^0.12.23",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-cli": "^0.0.4",
+    "karma-jasmine": "^0.3.6",
+    "rimraf": "^2.4.3",
+    "systemjs": "^0.19.4"
+
   }
 }

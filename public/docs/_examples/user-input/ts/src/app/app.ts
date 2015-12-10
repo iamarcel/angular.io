@@ -12,7 +12,7 @@ import {bootstrap, Component, CORE_DIRECTIVES} from 'angular2/angular2';
   selector: 'click-me',
   template: '<button (click)="onClickMe()">Click me</button>'
 })
-class ClickMeComponent {
+export class ClickMeComponent {
   onClickMe(){
     alert('You are my hero!')    
   }
