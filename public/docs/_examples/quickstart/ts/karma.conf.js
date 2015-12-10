@@ -11,7 +11,7 @@ module.exports = function(config) {
       {pattern: 'node_modules/angular2/bundles/angular2.js', included: true, watched: true},
       {pattern: 'node_modules/angular2/bundles/testing.js', included: true, watched: true},
       {pattern: 'karma-test-shim.js', included: true, watched: true},
-      {pattern: 'src/test/*.js', included: true, watched: true},
+      {pattern: 'src/test/matchers.js', included: true, watched: true},
 
       // paths loaded via module imports
       {pattern: 'src/**/*.js', included: false, watched: true},
@@ -32,13 +32,8 @@ module.exports = function(config) {
       "/app/": "/base/src/app/"
     },
 
-    // reporters: ['progress', 'spec'],
-    reporters: ['spec'],
-    specReporter: {
-      maxLogLines: 2,         // limit number of lines logged per test
-      suppressErrorSummary: true
-    },
-    port: 9879,
+    reporters: ['progress'],
+    port: 9877,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,

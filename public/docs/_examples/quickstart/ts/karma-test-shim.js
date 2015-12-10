@@ -30,7 +30,7 @@ System.config({
 
 // System.import('angular2/src/core/dom/browser_adapter').then(function(browser_adapter) {
 System.import('angular2/src/platform/browser/browser_adapter').then(function(browser_adapter) {
-  browser_adapter.BrowserDomAdapter.makeCurrent();
+    browser_adapter.BrowserDomAdapter.makeCurrent();
 }).then(function() {
   return Promise.all(
     Object.keys(window.__karma__.files) // All files served by Karma.
