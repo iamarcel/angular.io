@@ -56,7 +56,7 @@ function filePath2moduleName(filePath) {
 
 
 function onlyAppFiles(filePath) {
-  return /^\/base\/src\/app\/.*\.js$/.test(filePath)
+  return /^\/base\/src\/app\/.*\.js$/.test(filePath) && !onlySpecFiles(filePath);
 }
 
 
