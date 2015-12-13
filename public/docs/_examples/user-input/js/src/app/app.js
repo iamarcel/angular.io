@@ -19,11 +19,10 @@ var ClickMeComponent = ng.core
 var KeyUpComponent = ng.core
 .Component({
   selector: 'key-up',
-  template: `
-    <h4>Give me some keys!</h4>
-    <div><input (keyup)="onKey($event)"></div>
-    <div>{{values}}</div>
-  `
+  template: 
+    '<h4>Give me some keys!</h4>' +
+    '<div><input (keyup)="onKey($event)"></div>' +
+    '<div>{{values}}</div>'
 })
 .Class({
   constructor: function() {
@@ -39,10 +38,9 @@ var KeyUpComponent = ng.core
 var LoopbackComponent = ng.core
 .Component({
   selector: 'loop-back',
-  template: `
-    <h4>keyup loop-back component</h4>
-    <input #box (keyup)="0"> <p>{{box.value}}</p>
-  `
+  template: 
+    '<h4>keyup loop-back component</h4>' +
+    '<input #box (keyup)="0"> <p>{{box.value}}</p>'
 }) 
 .Class({
   constructor: function() {}
@@ -53,11 +51,10 @@ var LoopbackComponent = ng.core
 var KeyUpComponentV2 = ng.core
 .Component({
   selector: 'key-up2',
-  template: `
-    <h4>Give me some more keys!</h4>
-    <div><input #box (keyup)="onKey(box.value)"></div>
-    <div>{{values}}</div>
-  `
+  template: 
+    '<h4>Give me some more keys!</h4>' +
+    '<div><input #box (keyup)="onKey(box.value)"></div>' +
+    '<div>{{values}}</div>'
 })
 .Class({
   constructor: function() {
@@ -73,11 +70,10 @@ var KeyUpComponentV2 = ng.core
 var KeyUpComponentV3 = ng.core
 .Component({
   selector: 'key-up3',
-  template: `
-    <h4>Type away! Press [enter] when done.</h4>
-    <div><input #box (keyup.enter)="values=box.value"></div>
-    <div>{{values}}</div>
-  `
+  template: 
+    '<h4>Type away! Press [enter] when done.</h4>' +
+    '<div><input #box (keyup.enter)="values=box.value"></div>' +
+    '<div>{{values}}</div>'
 })
 .Class({
   constructor: function() {
@@ -90,15 +86,14 @@ var KeyUpComponentV3 = ng.core
 var KeyUpComponentV4 = ng.core
 .Component({
   selector: 'key-up4',
-  template: `
-    <h4>Type away! Press [enter] or mouse away when done.</h4>
-    <div>
-      <input #box 
-        (keyup.enter)="values=box.value" 
-        (blur)="values=box.value">
-    <div>
-    <div>{{values}}</div>
-  `
+  template: 
+    '<h4>Type away! Press [enter] or mouse away when done.</h4>' +
+    '<div>' +
+    '  <input #box' + 
+    '    (keyup.enter)="values=box.value"' + 
+    '    (blur)="values=box.value">' +
+    '<div>' +
+    '<div>{{values}}</div>'
 })
 .Class({
   constructor: function() {
@@ -111,14 +106,13 @@ var KeyUpComponentV4 = ng.core
 var LittleTour = ng.core
 .Component({
   selector: 'little-tour',
-  template: `
-    <h4>Little Tour of Heroes</h4>
-    <input #newHero 
-      (keyup.enter)="addHero(newHero)"
-      (blur)="addHero(newHero)">
-    <button (click)=addHero(newHero)>Add</button>
-    <ul><li *ngFor="#hero of heroes">{{hero}}</li></ul>
-  `
+  template: 
+    '<h4>Little Tour of Heroes</h4>' +
+    '<input #newHero' + 
+    '  (keyup.enter)="addHero(newHero)"' +
+    '  (blur)="addHero(newHero)">' +
+    '<button (click)=addHero(newHero)>Add</button>' +
+    '<ul><li *ngFor="#hero of heroes">{{hero}}</li></ul>'
 })
 .Class({
   constructor: function() {
