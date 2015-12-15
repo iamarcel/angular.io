@@ -85,11 +85,11 @@ figure.image-display
   1. Test a class
     - test a simple application class outside of Angular
     - where to put the test file
-    - load a test file with systemJS
+    - load a test file with systemjs
   1. Test a Pipe
     - test a simple Angular Pipe class
     - add the Angular 2 library to the  test harness
-    - load multiple test files using systemJS
+    - load multiple test files using systemjs
   1. Test an Asynchronous Service
     - test an asynchronous service class outside of Angular
     - write a test plan in code
@@ -426,16 +426,7 @@ figure.image-display
   - to test one of our application classes
   - why we prefer our test files to be next to their corresponding source files
   - to run tests with an `npm` command
-  - load the test file with systemJS
-
-.callout.is-helpful
-  header Prior Knowledge
-  :marked
-    The Unit Testing chapters build upon each other. We recommend reading them in order.
-    We're also assuming that you're already comfortable with basic Angular 2 concepts and the tools
-    we introduced in the [QuickStart](../quickstart.html) and
-    the [Tour of Heroes](../tutorial/) tutorial
-    such as <code>npm</code>, <code>gulp</code>, and <code>live-server</code>.
+  - load the test file with systemjs
 
 .l-main-section
 :marked
@@ -470,8 +461,8 @@ figure.image-display
 :marked
   ## Update `package.json` for testing
 
-  We’ll assume that the application has `package.json` file that looks more or less like
-  the one we prescribed in the in the  “Install npm packages locally” section of the
+  We’ll assume that the application has a `package.json` file that looks more or less like
+  the one we prescribed in the “Install npm packages locally” section of the
   [QuickStart](../quickstart.html).
 
   We must install the Jasmine package as well:
@@ -719,16 +710,16 @@ figure.image-display
   ## Observations
 
   ### System.config
-  System.js demands that we specify a default extension for the filenames that correspond to whatever it is asked to import.
+  Systemjs demands that we specify a default extension for the filenames that correspond to whatever it is asked to import.
   Without that default, it would translate an import statement such as `import {Hero} from ‘./here’` to a request for the file named `hero`.
-  Not `hero.js`. Just plain `hero`.  Our server error with “404 - not found” because it doesn’t have a file of that name.
+  Not `hero.js`. Just plain `hero`.  Our server would error with “404 - not found” because it doesn’t have a file of that name.
 
   Once configured with a default extension of ‘js’,&nbsp;  Systemjs requests `hero.js` which *does* exist and is promptly returned by our server.
 
   ### Asynchronous System.import
   The call to `System.import` shouldn’t surprise us but it’s asynchronous nature might.
   If we ponder this for a moment, we realize that it must be asynchronous because
-  System.js may have to fetch the corresponding JavaScript file from the server.
+  systemjs may have to fetch the corresponding JavaScript file from the server.
   Accordingly, `System.import` returns a promise and we must wait for that promise to resolve.
   Only then can Jasmine start evaluating the imported tests.
 
@@ -756,7 +747,7 @@ figure.image-display
 
 .l-main-section
 :marked
-  # First App Tests
+  # Testing an Angular Pipe
   
 :marked
   We’ll test an Angular pipe in this chapter
