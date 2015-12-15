@@ -40,32 +40,37 @@ var _rxData = [
   {
     pattern: 'script',
     from: 'node_modules/angular2/bundles/angular2.dev.js',
-    to: 'https://code.angularjs.org/2.0.0-alpha.53/angular2.dev.js'
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/angular2.dev.js'
   },
   {
     pattern: 'script',
-    from: 'node_modules/angular2/bundles/angular2.umd.js',
-    to: 'https://code.angularjs.org/2.0.0-alpha.52/angular2.umd.js'
+    from: 'node_modules/angular2/bundles/angular2-all.umd.js',
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/angular2-all.umd.js'
   },
   {
     pattern: 'script',
     from: 'node_modules/angular2/bundles/angular2-polyfills.js',
-    to: 'https://code.angularjs.org/2.0.0-alpha.52/angular2-polyfills.js'
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/angular2-polyfills.js'
+  },
+  {
+    pattern: 'script',
+    from: 'node_modules/rxjs/bundles/Rx.umd.js',
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/Rx.umd.js'
   },
   {
     pattern: 'script',
     from: 'node_modules/angular2/bundles/router.dev.js',
-    to: 'https://code.angularjs.org/2.0.0-alpha.53/router.dev.js'
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/router.dev.js'
   },
   {
     pattern: 'script',
     from: 'node_modules/angular2/bundles/http.dev.js',
-    to: 'https://code.angularjs.org/2.0.0-alpha.53/http.dev.js'
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/http.dev.js'
   },
   {
     pattern: 'script',
     from: 'node_modules/angular2/bundles/testing.js',
-    to: 'https://code.angularjs.org/2.0.0-alpha.53/testing.js'
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/testing.js'
   },
   {
     pattern: 'link',
