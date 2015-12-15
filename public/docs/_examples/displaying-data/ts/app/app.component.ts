@@ -5,6 +5,8 @@ import {Component} from 'angular2/core';
 // #enddocregion imports
 import {Hero} from './hero'
 
+import {CORE_DIRECTIVES } from 'angular2/common';
+
 @Component({
   selector: 'my-app',
   template: `
@@ -19,7 +21,8 @@ import {Hero} from './hero'
   // #docregion message
   <p *ngIf="heroes.length > 3">There are many heroes!</p>
   // #enddocregion message
-`
+`,
+  directives: [CORE_DIRECTIVES]
 })
 
 export class AppComponent {
