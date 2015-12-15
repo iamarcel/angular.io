@@ -44,6 +44,16 @@ var _rxData = [
   },
   {
     pattern: 'script',
+    from: 'node_modules/angular2/bundles/angular2.umd.js',
+    to: 'https://code.angularjs.org/2.0.0-alpha.52/angular2.umd.js'
+  },
+  {
+    pattern: 'script',
+    from: 'node_modules/angular2/bundles/angular2-polyfills.js',
+    to: 'https://code.angularjs.org/2.0.0-alpha.52/angular2-polyfills.js'
+  },
+  {
+    pattern: 'script',
     from: 'node_modules/angular2/bundles/router.dev.js',
     to: 'https://code.angularjs.org/2.0.0-alpha.53/router.dev.js'
   },
