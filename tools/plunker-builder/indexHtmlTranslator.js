@@ -41,7 +41,26 @@ var _rxData = [
   {
     pattern: 'script',
     from: 'node_modules/angular2/bundles/angular2.dev.js',
+<<<<<<< HEAD
     to: 'https://code.angularjs.org/2.0.0-beta.0/angular2.dev.js'
+=======
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/angular2.dev.js'
+  },
+  {
+    pattern: 'script',
+    from: 'node_modules/angular2/bundles/angular2-all.umd.js',
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/angular2-all.umd.js'
+  },
+  {
+    pattern: 'script',
+    from: 'node_modules/angular2/bundles/angular2-polyfills.js',
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/angular2-polyfills.js'
+  },
+  {
+    pattern: 'script',
+    from: 'node_modules/rxjs/bundles/Rx.umd.js',
+    to: 'https://code.angularjs.org/2.0.0-alpha.54/Rx.umd.js'
+>>>>>>> c03db4bdb9b7ee8c3eb81716722b7aaf24f8def0
   },
   {
     pattern: 'script',
