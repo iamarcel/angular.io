@@ -1,10 +1,7 @@
-- var number = 1;
-ul.is-plain
-  for page, slug in public.docs[current.path[1]][current.path[2]].guide._data
-
-    if slug != '_listtype' && slug != 'index'
-      - var url = "/docs/" + current.path[1] + "/" + current.path[2] + "/" + current.path[3] + "/" + slug + ".html"
-      - var num = number++
-
-      li
-        != partial("../../../../_includes/_hover-card", { icon: "icon-number", number: num, name: page.title, url: url })
+include ../../../../_includes/_util-fns
++includeShared('{ts}', 's1')
+:marked
+  Look for a link to a running version of that sample near the top of each page such as this
+  [live example](/resources/live-examples/architecture/js/plnkr.html) from the [Architecture](architecture.html) chapter.
++includeShared('{ts}', 's2')
+:marked

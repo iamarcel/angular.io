@@ -1,5 +1,6 @@
 include ../../../../_includes/_util-fns
 
+// #docregion s1
 :marked
   Angular 2 is a framework to help us build client applications in HTML and JavaScript.
   
@@ -11,12 +12,10 @@ include ../../../../_includes/_util-fns
   
   Angular takes over, presenting our application content in a browser and responding to user interactions
   according to the instructions we provided.
-  
-<!-- figure img(src="/resources/images/devguide/architecture/airplane.png" alt="Us" align="left" style="width:200px; margin-left:-40px;margin-right:10px" ) -->
 :marked
   Of course there is more to it than this. We'll learn the details when we dive into the guide chapters.
   Let's get the big picture first.
-
+// #enddocregion s1
 figure
   img(src="/resources/images/devguide/architecture/overview2.png" alt="overview" style="margin-left:-40px;" width="700")
 :marked
@@ -35,6 +34,7 @@ figure
 .l-sub-section
   :marked
       The code referenced in this chapter is available as a [live example](/resources/live-examples/architecture/ts/plnkr.html).
+
 <a id="module"></a>
 .l-main-section
 :marked
@@ -129,10 +129,12 @@ figure
   * We prefer to write our application as a collection of modules, each module exporting one thing.
   
   The first module we write will most likely export a component.
+
 .l-main-section
 <a id="component"></a>
 :marked
   ## The Component
+// #docregion s2  
 figure
   img(src="/resources/images/devguide/architecture/hero-component.png" alt="Component" align="left" style="width:200px; margin-left:-40px;margin-right:10px" )
 :marked
@@ -148,8 +150,9 @@ figure
   that it acquired from a service.
   It might have a `selectHero()` method that sets a `selectedHero` property when the user click on a hero from that list.
   It might be a class like this:
-
+// #enddocregion s2
 +makeExample('architecture/ts/app/hero-list.component.ts', 'class', 'app/hero-list.component.ts')
+// #docregion s3
 :marked
   Angular creates, updates, and destroys components as the user moves through the application.
   The developer can take action at each moment in this lifecycle through optional [Lifecycle Hooks](lifecycle-hooks.html).
@@ -161,11 +164,13 @@ figure
     We may wonder who is calling that constructor? Who provides the service parameter?
     For the moment, have faith that Angular will call the constructor and deliver an
     appropriate `HeroService` when we need it.
+// #enddocregion s3
 
 .l-main-section
 <a id="template"></a>
 :marked
   ## The Template
+
 figure
   img(src="/resources/images/devguide/architecture/template.png" alt="Template" align="left" style="width:200px; margin-left:-40px;margin-right:10px" )
 :marked
@@ -174,7 +179,9 @@ figure
 
   A template looks like regular HTML much of the time ... and then it gets a bit strange. Here is a
   template for our `HeroList` component.
+
 +makeExample('architecture/ts/app/hero-list.component.html',null,'app/hero-list.component.html')
+// #docregion s4  
 :marked
   We recognize `<h2>` and  `<div>`. 
   But there's other markup that no one told us about in school.
@@ -200,11 +207,13 @@ figure
   
   And in this manner we can and will compose complex component trees to build out our richly featured application.
 <br clear="all">
+// #enddocregion s4  
 
 .l-main-section
 <a id="metadata"></a>
 :marked
   ## Angular Metadata
+// docregion s5
 figure
   img(src="/resources/images/devguide/architecture/metadata.png" alt="Metadata" align="left" style="width:150px; margin-left:-40px;margin-right:10px" )
 :marked
@@ -220,6 +229,7 @@ figure
   
   The easy way to attach metadata in TypeScript is with a **decorator**. 
   Here's some metadata for `HeroListComponent`:
+// #enddocregion s5
 +makeExample('architecture/ts/app/hero-list.component.ts', 'metadata', 'app/hero-list.component.ts (metadata)')
 :marked
   Here we see the `@Component` decorator which (no surprise) identifies the class

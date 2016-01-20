@@ -1,0 +1,56 @@
+include ../../../../_includes/_util-fns
+
++includeShared('{ts}', 's1')
+figure
+  img(src="/resources/images/devguide/architecture/overview.png" alt="overview" style="margin-left:-40px;" width="700")
+:marked
+  1. [Component](#component)
+  1. [Template](#template)
+  1. [Metadata](#metadata)
+  1. [Data Binding](#data-binding)
+  1. [Service](#service)
+  1. [Directive](#directive)
+  1. [Dependency Injection](#dependency-injection)
+
+  Learn these seven and we're on our way.
+//
+  .l-sub-section
+    :marked
+      The code referenced in this chapter is available as a [live example](/resources/live-examples/architecture/js/plnkr.html).
++includeShared('{ts}', 's1')
+
+.l-main-section
+<a id="component"></a>
+:marked
+  ## The Component
++includeShared('{ts}', 's2')
+p <b>CODE EXAMPLE FORTHCOMING - see TypeScript version for now</b>
+//+makeExample('architecture/js/app/hero-list.component.js', 'class', 'app/hero-list.component.js')
+
++includeShared('{ts}', 's3')
+
+.l-main-section
+<a id="template"></a>
+:marked
+  ## The Template
+
+figure
+  img(src="/resources/images/devguide/architecture/template.png" alt="Template" align="left" style="width:200px; margin-left:-40px;margin-right:10px" )
+:marked
+  We define a Component's view with its companion **template**. A template is a form of HTML
+  that tells Angular how to render the Component.
+
+  A template looks like regular HTML much of the time ... and then it gets a bit strange. Here is a
+  template for our `HeroList` component.
+
+p <b>CODE EXAMPLE FORTHCOMING - see TypeScript version for now</b>
+//+makeExample('architecture/js/app/hero-list.component.html',null,'app/hero-list.component.html')
+
++includeShared('{ts}', 's4')
+
+.l-main-section
+<a id="metadata"></a>
+:marked
+  ## Angular Metadata
+
++includeShared('{ts}', 's5')
