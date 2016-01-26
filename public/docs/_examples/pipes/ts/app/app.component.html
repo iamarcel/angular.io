@@ -45,3 +45,12 @@
 <hr>
 <power-boost-calculator>loading ..</power-boost-calculator>
 
+<hr>
+<h3>MovieFilter Pipe</h3>
+<table>
+ <tr><td>Match all</td><td id="all">{{movies | movieFilter | json}}</td></tr>
+ <tr><td>Match 'fast'</td><td id="fast">{{movies | movieFilter:'fast' | json}}</td></tr>
+ <tr><td>Match 'time'</td><td id="time">{{movies | movieFilter:'time' | json}}</td></tr> 
+ <tr><td>Match 'fa.*b'</td><td id="regex">{{movies | movieFilter:'fa.*b' | json}}</td></tr>  
+ <tr><td>Match 'nothing'</td><td id="nothing">{{movies | movieFilter:'nothing' | json}}</td></tr> 
+</table>

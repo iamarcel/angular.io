@@ -65,6 +65,31 @@ describe('Pipes', function () {
     });
   });
 
+  describe('MovieFilterPipe', function() {
+  
+    it('should return all movies when no filter', test('#all', 
+      '[ { "title": "Fast Break" }, { "title": "Fast Times" }, { "title": "Good Times" } ]'));
+
+    it('should return the "Fast ..." movies when filter is "fast"', test('#fast', 
+      '[ { "title": "Fast Break" }, { "title": "Fast Times" } ]'));
+    
+    it('should return the "... Times" movies when filter is "time"', test('#time', 
+      '[ { "title": "Fast Times" }, { "title": "Good Times" } ]'));
+    
+    it('should return "Fast Break" when filter is the regex "#fa.*b"', test('#regex', 
+      '[ { "title": "Fast Break" } ]'));
+    
+    it('should return no movies when filter is "nothing"', test('#nothing', '[]'));
+    
+    // helper
+    function test(css, expected) {
+      return function() {
+        var el = element(by.css(css));
+        expect(el.getText()).toEqual(expected);
+      }
+    }
+
+  });
 
 
 });
