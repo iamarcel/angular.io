@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</head>
+<body>
+  <div id="message" ng-controller="MainCtrl as mainCtrl">{{ mainCtrl.message }}</div>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+  <script src="node_modules/systemjs/dist/system.js"></script>
+  <script src="node_modules/rxjs/bundles/Rx.js"></script>
+  <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+  <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+  <script src="node_modules/angular2/bundles/upgrade.dev.js"></script>
+  <script>
+    System.config({
+      packages: {
+        'app': {defaultExtension: 'js'}
+      }
+    });
+    System.import('app/1-2-hybrid-shared-adapter-bootstrap/app.module')
+      .catch(function(e) { console.error(e); });
+  </script>
+</body>
+</html>

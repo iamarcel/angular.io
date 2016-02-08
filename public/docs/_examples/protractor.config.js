@@ -32,7 +32,7 @@ exports.config = {
 
   // doesn't seem to work.
   // resultJsonOutputFile: "foo.json",
-  
+
   onPrepare: function() {
     //// SpecReporter
     //var SpecReporter = require('jasmine-spec-reporter');
@@ -60,6 +60,12 @@ exports.config = {
     global.describeIf = describeIf;
     global.itIf = itIf;
     global.sendKeys = sendKeys;
+
+    // Allow changing bootstrap mode to NG1 for upgrade tests
+    global.setProtractorToNg1Mode = function() {
+      browser.useAllAngular2AppRoots = false;
+      browser.rootEl = 'body';
+    };
   },
 
   jasmineNodeOpts: {
@@ -95,7 +101,6 @@ function sendKeys(element, str) {
   }, element.getAttribute('value'));
   // better to create a resolved promise here but ... don't know how with protractor;
 }
-
 
 function Reporter(options) {
   var _defaultOutputFile = path.resolve(process.cwd(), "../../", 'protractor-results.txt');
@@ -187,4 +192,3 @@ function Reporter(options) {
   }
 
 }
-

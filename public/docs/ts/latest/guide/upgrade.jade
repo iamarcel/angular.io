@@ -182,7 +182,7 @@ include ../../../../_includes/_util-fns
   An Angular 1 component directive that is fully aligned with the Angular 2
   architecture may look something like this:
     
-+makeExample('upgrade/ts/adapter/app/js/hero-detail.directive.ts')
++makeExample('upgrade/ts/adapter/app/hero-detail.directive.ts')
 
 :marked
   Angular 1.5 introduces the [component API](https://docs.angularjs.org/api/ng/type/angular.Module)
@@ -197,7 +197,7 @@ include ../../../../_includes/_util-fns
   The component directive example from above looks like this when expressed
   using the component API:
   
-+makeExample('upgrade/ts/adapter/app/js/upgrade-io/hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/upgrade-io/hero-detail.component.ts')
 
 
 
@@ -400,14 +400,14 @@ figure.image-display
 
   Say we have an `ng-app` driven bootstrap such as this one:
   
-+makeExample('upgrade/ts/adapter/app/index-ng-app.html', null, null, {otl: /(ng-app.*ng-strict-di)/})
++makeExample('upgrade/ts/adapter/index-ng-app.html', null, null, {otl: /(ng-app.*ng-strict-di)/})
 
 :marked
   We can remove the `ng-app` and `ng-strict-di` directives from the HTML
   and instead switch to calling `angular.bootstrap` from JavaScript, which
   will result in the same thing:
 
-+makeExample('upgrade/ts/adapter/app/js/1-bootstrap/app.module.ts', 'bootstrap')
++makeExample('upgrade/ts/adapter/app/1-bootstrap/app.module.ts', 'bootstrap')
 
 :marked
   To then switch the application into hybrid mode, we must first
@@ -419,7 +419,7 @@ figure.image-display
   [angular.bootstrap](https://docs.angularjs.org/api/ng/function/angular.bootstrap)
   so that it is easy to make the switch:
 
-+makeExample('upgrade/ts/adapter/app/js/1-2-hybrid-bootstrap/app.module.ts', 'bootstrap')
++makeExample('upgrade/ts/adapter/app/1-2-hybrid-bootstrap/app.module.ts', 'bootstrap')
 
 :marked
   At this point we'll be running a hybrid Angular 1+2 application! All the
@@ -441,12 +441,12 @@ figure.image-display
   It'll be useful to have a module for a shared `UpgradeAdapter` instance in
   the project:
   
-+makeExample('upgrade/ts/adapter/app/js/1-2-hybrid-shared-adapter-bootstrap/upgrade_adapter.ts', null, 'upgrade_adapter.ts')
++makeExample('upgrade/ts/adapter/app/1-2-hybrid-shared-adapter-bootstrap/upgrade_adapter.ts', null, 'upgrade_adapter.ts')
 
 :marked
   This shared instance can then be pulled in to all the modules that need it:
   
-+makeExample('upgrade/ts/adapter/app/js/1-2-hybrid-shared-adapter-bootstrap/app.module.ts', 'bootstrap')
++makeExample('upgrade/ts/adapter/app/1-2-hybrid-shared-adapter-bootstrap/app.module.ts', 'bootstrap')
 
 :marked
   ## Using Angular 2 Components from Angular 1 Code
@@ -460,20 +460,20 @@ figure
   
   Say we have a simple Angular 2 component that shows information about a hero:
   
-+makeExample('upgrade/ts/adapter/app/js/downgrade-static/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/downgrade-static/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 :marked
   If we want to use this component from Angular 1, we need to *downgrade* it
   using the upgrade adapter. What we get when we do that is an Angular 1
   *directive*, which we can then register into our Angular 1 module:
   
-+makeExample('upgrade/ts/adapter/app/js/downgrade-static/app.module.ts', 'downgradecomponent')
++makeExample('upgrade/ts/adapter/app/downgrade-static/app.module.ts', 'downgradecomponent')
 
 :marked
   What we have here is an Angular 1 directive called `heroDetail`, which we can
   use like any other directive in our Angular 1 templates. 
   
-+makeExample('upgrade/ts/adapter/app/index-downgrade-static.html', 'usecomponent')
++makeExample('upgrade/ts/adapter/index-downgrade-static.html', 'usecomponent')
 
 .alert.is-helpful
   :marked
@@ -487,13 +487,13 @@ figure
   Angular 2 hero detail component with inputs and outputs might look
   like this:
    
-+makeExample('upgrade/ts/adapter/app/js/downgrade-io/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/downgrade-io/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 :marked
   These inputs and outputs can be supplied from the Angular 1 template, and the
   `UpgradeAdapter` takes care of bridging them over:
   
-+makeExample('upgrade/ts/adapter/app/index-downgrade-io.html', 'usecomponent')
++makeExample('upgrade/ts/adapter/index-downgrade-io.html', 'usecomponent')
 
 :marked
   Note that even though we are in an Angular 1 template, **we're using Angular 2
@@ -508,7 +508,7 @@ figure
   directives on the element, even though it has Angular 2 binding attributes on it.
   For  example, we can easily make multiple copies of the component using `ng-repeat`:
   
-+makeExample('upgrade/ts/adapter/app/index-downgrade-io.html', 'userepeatedcomponent')
++makeExample('upgrade/ts/adapter/index-downgrade-io.html', 'userepeatedcomponent')
 
 :marked
   ## Using Angular 1 Component Directives from Angular 2 Code
@@ -533,7 +533,7 @@ figure
   A simple example of an upgradable component is one that just has a template
   and a controller: 
    
-+makeExample('upgrade/ts/adapter/app/js/upgrade-static/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/upgrade-static/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 :marked
   We can *upgrade* this component to Angular 2 using the `UpgradeAdapter`'s
@@ -542,7 +542,7 @@ figure
   want to use it from an Angular 2 component, we list it the in the `directives`
   metadata of the component and then just use it in the Angular 2 template:
   
-+makeExample('upgrade/ts/adapter/app/js/upgrade-static/container.component.ts', null, 'container.component.ts')
++makeExample('upgrade/ts/adapter/app/upgrade-static/container.component.ts', null, 'container.component.ts')
 
 .alert.is-helpful
   :marked
@@ -592,13 +592,13 @@ table
   As an example, say we have a hero detail Angular 1 component directive
   with one input and one output:
   
-+makeExample('upgrade/ts/adapter/app/js/upgrade-io/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/upgrade-io/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 :marked
   We can upgrade this component to Angular 2, and then provide the input
   and output using Angular 2 template syntax:
   
-+makeExample('upgrade/ts/adapter/app/js/upgrade-io/container.component.ts', null, 'container.component.ts')
++makeExample('upgrade/ts/adapter/app/upgrade-io/container.component.ts', null, 'container.component.ts')
 
 
 :marked
@@ -615,14 +615,14 @@ figure
   Angular 2 components that support content projection make use of an `<ng-content>`
   tag within them. Here's an example of such a component:
   
-+makeExample('upgrade/ts/adapter/app/js/1-to-2-projection/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/1-to-2-projection/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 :marked
   When using the component from Angular 1, we can supply contents for it. Just
   like they would be transcluded in Angular 1, they get projected to the location
   of the `<ng-content>` tag in Angular 2:
   
-+makeExample('upgrade/ts/adapter/app/index-1-to-2-projection.html', 'usecomponent')
++makeExample('upgrade/ts/adapter/index-1-to-2-projection.html', 'usecomponent')
 
 .alert.is-helpful
   :marked
@@ -642,7 +642,7 @@ figure
   the `ng-transclude` directive in its template to mark the transclusion
   point:
   
-+makeExample('upgrade/ts/adapter/app/js/2-to-1-transclusion/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/2-to-1-transclusion/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 .alert.is-helpful
   :marked
@@ -654,7 +654,7 @@ figure
   If we upgrade this component and use it from Angular 2, we can populate
   the component tag with contents that will then get transcluded:
   
-+makeExample('upgrade/ts/adapter/app/js/2-to-1-transclusion/container.component.ts', null, 'container.component.ts')
++makeExample('upgrade/ts/adapter/app/2-to-1-transclusion/container.component.ts', null, 'container.component.ts')
 
 :marked
   ## Making Angular 1 Dependencies Injectable to Angular 2
@@ -668,19 +668,19 @@ figure
   Angular 2. This makes it possible to then inject it somewhere in Angular 2
   code. For example, we might have a service called `HeroesService` in Angular 1:
   
-+makeExample('upgrade/ts/adapter/app/js/1-to-2-providers/heroes.service.ts', null, 'heroes.service.ts')
++makeExample('upgrade/ts/adapter/app/1-to-2-providers/heroes.service.ts', null, 'heroes.service.ts')
 
 :marked
   We can upgrade the service using the `UpgradeAdapter`'s `upgradeNg1Provider` method
   by giving it the name of the service. This adds the service into Angular 2's root injector.
   
-+makeExample('upgrade/ts/adapter/app/js/1-to-2-providers/app.module.ts', 'register', 'app.module.ts')
++makeExample('upgrade/ts/adapter/app/1-to-2-providers/app.module.ts', 'register', 'app.module.ts')
 
 :marked
   We can then inject it in Angular 2 using a string token that matches
   its original name in Angular 1:
   
-+makeExample('upgrade/ts/adapter/app/js/1-to-2-providers/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/1-to-2-providers/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 .alert.is-helpful
   :marked
@@ -700,7 +700,7 @@ figure
   
   For example, we might have an Angular 2 service called `Heroes`:
   
-+makeExample('upgrade/ts/adapter/app/js/2-to-1-providers/heroes.ts', null, 'heroes.ts')
++makeExample('upgrade/ts/adapter/app/2-to-1-providers/heroes.ts', null, 'heroes.ts')
 
 :marked
   We can again use the `UpgradeAdapter` for this, but first we need to register `Heroes`
@@ -715,12 +715,12 @@ figure
   then plug the factory into an Angular 1 module, at which point we also choose what the
   name of the dependency will be in Angular 1:
   
-+makeExample('upgrade/ts/adapter/app/js/2-to-1-providers/app.module.ts', 'register', 'app.module.ts')
++makeExample('upgrade/ts/adapter/app/2-to-1-providers/app.module.ts', 'register', 'app.module.ts')
 
 :marked
   After this, the service is injectable anywhere in our Angular 1 code:
   
-+makeExample('upgrade/ts/adapter/app/js/2-to-1-providers/hero-detail.component.ts', null, 'hero-detail.component.ts')
++makeExample('upgrade/ts/adapter/app/2-to-1-providers/hero-detail.component.ts', null, 'hero-detail.component.ts')
 
 .l-main-section
 :marked
