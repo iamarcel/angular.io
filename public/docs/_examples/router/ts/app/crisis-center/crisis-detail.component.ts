@@ -2,11 +2,15 @@
 
 // #docregion
 import {Component, OnInit} from 'angular2/core';
-import {Crisis, CrisisService} from './crisis.service';
 import {RouteParams, Router} from 'angular2/router';
-import {CanDeactivate, ComponentInstruction} from 'angular2/router';
+import {CanActivate as CA, CanDeactivate, ComponentInstruction} from 'angular2/router';
 import {DialogService} from '../dialog.service';
 
+import {Crisis, CrisisService} from './crisis.service';
+import {CanActivate, canActivate} from './crisis-activation.service';
+
+@CA(canActivate)
+//@CanActivate()
 @Component({
   template: `
   <div *ngIf="crisis">

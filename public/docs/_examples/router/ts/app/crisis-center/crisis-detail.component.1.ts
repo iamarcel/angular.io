@@ -5,7 +5,9 @@ import {Component, OnInit} from 'angular2/core';
 import {Crisis, CrisisService} from './crisis.service';
 import {RouteParams, Router} from 'angular2/router';
 // #docregion routerCanDeactivate
-import {CanDeactivate, ComponentInstruction} from 'angular2/router';
+// #docregion import-router-hooks
+import {CanActivate, CanDeactivate, ComponentInstruction} from 'angular2/router';
+// #docregion import-router-hooks
 import {DialogService} from '../dialog.service';
 
 // #enddocregion routerCanDeactivate
