@@ -1,10 +1,10 @@
 // #docregion
-import {Component}     from 'angular2/core';
+import {Component} from 'angular2/core';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
 
-import {CrisisListComponent}   from './crisis-list.component';
-import {CrisisDetailComponent} from './crisis-detail.component';
-import {CrisisService}         from './crisis.service';
+import {CrisisListComponent}     from './crisis-list.component';
+import {CrisisDetailShellComponent}   from './crisis-detail.component';
+import {CrisisService}           from './crisis.service';
 
 @Component({
   template:  `
@@ -16,7 +16,7 @@ import {CrisisService}         from './crisis.service';
 })
 @RouteConfig([
   {path:'/',    name: 'CrisisList',   component: CrisisListComponent, useAsDefault: true},
-  {path:'/:id', name: 'CrisisDetail', component: CrisisDetailComponent}
+  {path:'/:id', name: 'CrisisDetail', component: CrisisDetailShellComponent}
 ])
 export class CrisisCenterComponent { }
 // #enddocregion

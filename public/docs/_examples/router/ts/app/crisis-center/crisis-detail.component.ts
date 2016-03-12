@@ -2,12 +2,13 @@
 
 // #docregion
 import {Component, OnInit} from 'angular2/core';
-import {Crisis, CrisisService} from './crisis.service';
-import {RouteParams, Router} from 'angular2/router';
+import {OnActivate, RouteParams, Router} from 'angular2/router';
 import {CanDeactivate, ComponentInstruction} from 'angular2/router';
 import {DialogService} from '../dialog.service';
+import {Crisis, CrisisService} from './crisis.service';
 
 @Component({
+  selector: 'crisis-detail',
   template: `
   <div *ngIf="crisis">
     <h3>"{{editName}}"</h3>
@@ -25,7 +26,6 @@ import {DialogService} from '../dialog.service';
   `,
   styles: ['input {width: 20em}']
 })
-
 export class CrisisDetailComponent implements OnInit, CanDeactivate {
 
   crisis: Crisis;
@@ -81,4 +81,30 @@ export class CrisisDetailComponent implements OnInit, CanDeactivate {
     // #enddocregion gotoCrises-navigate
   }
   // #enddocregion gotoCrises
+}
+
+//////////////////
+
+@Component({
+  template: '<crisis-detail></crisis-detail>',
+  directives: [CrisisDetailComponent]
+})
+export class CrisisDetailShellComponent implements OnActivate {
+  constructor(private _router: Router) { }
+
+  routerOnActivate(next: ComponentInstruction): boolean | Promise<boolean>{
+    var params = next.params;
+    if (4 === +params['id']) {
+      console.log('You can\'t handle the procrastination crisis!');
+      this._router.navigate(['CrisisList']);
+      return false;
+    }
+    var p = new Promise((resolve)=>{
+      setTimeout(() => {
+        console.log("ready to navigate")
+        resolve(false);
+      }, 1000);
+    });
+    return p;
+  }
 }
