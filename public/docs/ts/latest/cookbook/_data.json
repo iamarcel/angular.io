@@ -34,5 +34,10 @@
   "ts-to-js": {
     "title": "TypeScript to JavaScript",
     "intro": "Convert Angular 2 TypeScript examples into ES5 JavaScript"
+  },
+  
+  "virtual-grid": {
+    "title": "Virtual Grid",
+    "description": "Scalable grid based on virtualization"
   }
 }
