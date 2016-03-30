@@ -16,5 +16,5 @@ _test-output
 **/ts-snippets/**/*.js
 *.d.ts
 
-!**/*e2e-spec.js
+!**/*e2e-spec.ts
 !systemjs.config.1.js
