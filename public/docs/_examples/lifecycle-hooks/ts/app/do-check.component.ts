@@ -1,5 +1,5 @@
 // #docregion
-import {Component, DoCheck, OnChanges, Input, SimpleChange, ViewChild} from 'angular2/core';
+import {Component, DoCheck, OnChanges, Input, SimpleChange, ViewChild} from '@angular/core';
 
 class Hero {
   constructor(public name:string){}
