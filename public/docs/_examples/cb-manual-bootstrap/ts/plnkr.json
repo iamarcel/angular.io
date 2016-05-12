@@ -1,0 +1,9 @@
+{
+  "description": "Angular 2 Alternate Bootstrap Methods",
+  "files":[
+    "!**/*.d.ts",
+    "!**/*.js",
+    "!**/*.[1].*"
+  ],
+  "tags":["cookbook", "angular", "bootstrap"]
+}

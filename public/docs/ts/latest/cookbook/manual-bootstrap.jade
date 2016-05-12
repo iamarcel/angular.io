@@ -1,0 +1,69 @@
+include ../_util-fns
+
+a(id='top')
+:marked
+  This cookbook explains how to do use the long-form bootstrap to do some initial setup
+  before bootstrapping our application.
+:marked
+  **See the [live example](/resources/live-examples/alternate-bootstrap/ts/plnkr.html)**.
+
+:marked
+  ## Normal bootstrap
+
+  In most cases, we just need to start our application without any additional setup
+  before bootstrap. But what if we need to request a token to provide to our Angular
+  application, or we need to bootstrap more than one application at a time? We can do that
+  using the long-form bootstrap process.
+
+:marked
+  Bootstrapping multiple applications
+
+.l-sub-section
+  :marked
+    If we're running multiple independent Angular applications on the same page, we can use the
+    `bootstrap` method multiple times with each application's root component.
+
++makeExample( "cb-manual-bootstrap/ts/app/main.ts", "bootstrap-mutiple", "app/main.ts" )
+
+:marked
+  ## Deferred bootstrap
+
+  Another common use case is retrieving data from an external resource, such as an application token
+  to provide to our application before bootstrapping.
+
+  +makeTabs(
+    `cb-manual-bootstrap/ts/app/main.ts,
+     cb-manual-bootstrap/ts/app/app.component.ts,
+     cb-manual-bootstrap/ts/app/token.service.ts`,
+    '',
+    'app/main.ts, app/app.component.ts, app/token.service.ts' )
+
+:marked
+  Using the long-form bootstrap, we create our application platform, use the injector to retrieve
+  our platform level providers, in this example being `Http`, retrieve our token from the server
+  and provide that token to our application at bootstrap.
+
+:marked
+  ## Cross application communication
+
+  When we are bootstrapping multiple applications on a single page, we also may want to provide a
+  mechanism in which those applications can communicate with each other.
+
+  Since we know we can access platform-level providers, we can use a platform level service that
+  is shared across our Angular applications to communicate across our application's boundaries.
+
+  +makeTabs(
+    `cb-manual-bootstrap/ts/app/main.ts,
+     cb-manual-bootstrap/ts/app/app.component.ts,
+     cb-manual-bootstrap/ts/app/app2.component.ts,
+     cb-manual-bootstrap/ts/app/app3.component.ts,
+     cb-manual-bootstrap/ts/app/share.service.ts`,
+    '',
+    `app/main.ts,
+     app/app.component.ts,
+     app/app2.component.ts,
+     app/app3.component.ts,
+     app/shared.service.ts` )
+
+:marked
+  [Back to top](#top)

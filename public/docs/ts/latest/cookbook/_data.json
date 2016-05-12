@@ -31,6 +31,11 @@
     "intro": "Render dynamic forms with NgFormModel"
   },
 
+  "manual-bootstrap": {
+    "title": "Manual Bootstrapping",
+    "intro": "Alternate methods for application bootstrapping"
+  },
+
   "set-document-title": {
     "title": "Set the Document Title",
     "intro": "Setting the document or window title using the Title service."
