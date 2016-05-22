@@ -124,9 +124,12 @@ gulp.task('run-e2e-tests', function() {
     return findAndRunE2eTests(argv.filter);
   }).then(function(status) {
     reportStatus(status);
+    if (status.failed.length > 0){
+      return Promise.reject('Some test suites failed');
+    }
   }).catch(function(e) {
     gutil.log(e);
-    return e;
+    process.exit(1);
   });
 });
 
@@ -483,9 +486,14 @@ gulp.task('git-changed-examples', ['_shred-devguide-examples'], function(){
 
 gulp.task('check-deploy', ['build-docs'], function() {
   return harpCompile().then(function() {
-    gutil.log('compile ok - running live server ...');
-    execPromise('npm run live-server ./www');
-    return askDeploy();
+    gutil.log('compile ok');
+    if(argv.dryRun) {
+      return false;
+    } else {
+      gutil.log('running live server ...');
+      execPromise('npm run live-server ./www');
+      return askDeploy();
+    }
   }).then(function(shouldDeploy) {
     if (shouldDeploy) {
       gutil.log('deploying...');
