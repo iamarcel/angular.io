@@ -22,9 +22,30 @@ describe('TOH Http Chapter', function () {
 
       addButton: element.all(by.buttonText('Add New Hero')).get(0),
 
-      heroDetail: element(by.css('my-app my-hero-detail'))
-    };
+      heroDetail: element(by.css('my-app my-hero-detail')),
+
+      searchBox: element(by.css('#search-box')),
+      searchResults: element.all(by.css('.search-result'))
+    }
   }
+
+  it('should search for hero and navigate to details view', function() {
+    var page = getPageStruct();
+
+    return sendKeys(page.searchBox, 'Magneta').then(function () {
+      expect(page.searchResults.count()).toBe(1);
+      var hero = page.searchResults.get(0);
+      return hero.click();
+    })
+    .then(function() {
+      browser.waitForAngular();
+      var inputEle = page.heroDetail.element(by.css('input'));
+      return inputEle.getAttribute('value');
+    })
+    .then(function(value) {
+      expect(value).toBe('Magneta');
+    });
+  });
 
   it('should be able to add a hero from the "Heroes" view', function(){
     let page = getPageStruct();

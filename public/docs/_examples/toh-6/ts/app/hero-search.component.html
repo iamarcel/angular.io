@@ -1,0 +1,10 @@
+<!-- #docregion -->
+<div id="search-component">
+  <h4>Hero Search</h4>  
+  <input id="search-box" [ngFormControl]="search" />    
+  <div *ngIf="showResult">
+    <div class="search-result" (click)="gotoDetail(hero)" *ngFor="let hero of heroes">
+      {{hero.name}}
+    </div>
+  </div>
+</div>

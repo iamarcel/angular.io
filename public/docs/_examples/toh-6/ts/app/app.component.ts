@@ -2,10 +2,13 @@
 // #docregion
 import { Component } from '@angular/core';
 import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
-
+// #docregion rxjs-operators
+import './rxjs-operators';
+// #enddocregion rxjs-operators
 import { DashboardComponent }  from './dashboard.component';
 import { HeroesComponent }     from './heroes.component';
 import { HeroDetailComponent } from './hero-detail.component';
+import { HeroSearchComponent } from './hero-search.component';
 import { HeroService }         from './hero.service';
 
 @Component({
@@ -20,7 +23,7 @@ import { HeroService }         from './hero.service';
     <router-outlet></router-outlet>
   `,
   styleUrls: ['app/app.component.css'],
-  directives: [ROUTER_DIRECTIVES],
+  directives: [ROUTER_DIRECTIVES, HeroSearchComponent],
   providers: [
     ROUTER_PROVIDERS,
     HeroService,
