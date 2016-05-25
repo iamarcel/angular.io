@@ -11,14 +11,16 @@ env:
     - CHROME_BIN=chromium-browser
   matrix:
     - SCRIPT="run-e2e-tests --fast"
+    - SCRIPT="check-deploy --dry-run"    
 before_install:
   - npm install -g gulp --no-optional
-  - npm install -g protractor --no-optional
+  - if [[ "$SCRIPT" == "run-e2e-tests --fast" ]]; then npm install -g protractor --no-optional; fi
+  - if [[ "$SCRIPT" == "check-deploy --dry-run" ]]; then git clone https://github.com/angular/angular.git ../angular; fi
 before_script:
   - sh -e /etc/init.d/xvfb start
 install:
   - npm install --no-optional
-  - npm install --prefix public/docs/_examples
-  - gulp add-example-boilerplate
+  - if [[ "$SCRIPT" == "run-e2e-tests --fast" ]]; then npm install --prefix public/docs/_examples; fi
+  - if [[ "$SCRIPT" == "run-e2e-tests --fast" ]]; then gulp add-example-boilerplate; fi
 script:
   - gulp $SCRIPT
