@@ -140,5 +140,10 @@
     "title": "Glossary",
     "intro": "Brief definitions of the most important words in the Angular 2 vocabulary",
     "basics": true
+  },
+
+  "real-quickstart": {
+    "title": "Real quickstart",
+    "intro": "Real quickstart, only in 30,45 minutes"
   }
 }
