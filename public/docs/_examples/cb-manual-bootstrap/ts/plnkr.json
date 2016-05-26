@@ -3,7 +3,7 @@
   "files":[
     "!**/*.d.ts",
     "!**/*.js",
-    "!**/*.[1].*"
+    "!**/*.[1,2,3,4].*"
   ],
   "tags":["cookbook", "angular", "bootstrap"]
 }

@@ -2,68 +2,95 @@ include ../_util-fns
 
 a(id='top')
 :marked
-  This cookbook explains how to do use the long-form bootstrap to do some initial setup
-  before bootstrapping our application.
-:marked
-  **See the [live example](/resources/live-examples/alternate-bootstrap/ts/plnkr.html)**.
+  This cookbook explains different ways of bootstrapping our application.
 
 :marked
-  ## Normal bootstrap
-
   In most cases, we just need to start our application without any additional setup
   before bootstrap. But what if we need to request a token to provide to our Angular
   application, or we need to bootstrap more than one application at a time? We can do that
-  using the long-form bootstrap process.
+  using normal and long-form bootstrap process.
+
+<a id="toc"></a>
+:marked
+   ## Table of contents
+
+      [Bootstrapping Multiple Applications](#bootstrap-multiple)
+
+      [Deferred Bootstrap](#deferred-bootstrap)
+
+      [Cross-Application Communication](#cross-application-communication)
 
 :marked
-  Bootstrapping multiple applications
+  **See the [live example](/resources/live-examples/cb-manual-bootstrap/ts/plnkr.html)**.
+
+.l-main-section
+<a id="bootstrap-multiple"></a>
+:marked
+  ## Bootstrapping Multiple Applications
 
 .l-sub-section
   :marked
-    If we're running multiple independent Angular applications on the same page, we can use the
+    If we're running multiple Angular applications on the same page, we can use the
     `bootstrap` method multiple times with each application's root component.
 
-+makeExample( "cb-manual-bootstrap/ts/app/main.ts", "bootstrap-mutiple", "app/main.ts" )
++makeTabs(
+  `cb-manual-bootstrap/ts/app/main.1.ts,
+   cb-manual-bootstrap/ts/app/app.component.1.ts,
+   cb-manual-bootstrap/ts/app/hero-app.component.1.ts`,
+  '',
+  'app/main.ts, app/app.component.ts, app/hero-app.component.ts' )
 
 :marked
-  ## Deferred bootstrap
+  Each application is bootstrapped and operates independently of other applications. We
+  can find this very useful for using many Angular applications on one page.
+
+:marked
+  <a id="deferred-bootstrap"></a>
+  ## Deferred Bootstrap
 
   Another common use case is retrieving data from an external resource, such as an application token
   to provide to our application before bootstrapping.
 
-  +makeTabs(
-    `cb-manual-bootstrap/ts/app/main.ts,
-     cb-manual-bootstrap/ts/app/app.component.ts,
-     cb-manual-bootstrap/ts/app/token.service.ts`,
-    '',
-    'app/main.ts, app/app.component.ts, app/token.service.ts' )
++makeTabs(
+  `cb-manual-bootstrap/ts/app/main.2.ts,
+   cb-manual-bootstrap/ts/app/app.component.2.ts,
+   cb-manual-bootstrap/ts/app/tokens.ts,
+   cb-manual-bootstrap/ts/app/token.service.ts`,
+  '',
+  'app/main.ts, app/app.component.ts, app/token.ts, app/token.service.ts' )
 
 :marked
   Using the long-form bootstrap, we create our application platform, use the injector to retrieve
-  our platform level providers, in this example being `Http`, retrieve our token from the server
+  our platform level service, in this example being `TokenService`, retrieve our token from the server
   and provide that token to our application at bootstrap.
 
 :marked
-  ## Cross application communication
+  <a id="cross-application-communication"></a>
+  ## Cross-Application Communication
 
-  When we are bootstrapping multiple applications on a single page, we also may want to provide a
-  mechanism in which those applications can communicate with each other.
+  When we are bootstrapping multiple applications on a single page, we can provide
+  shared services in which those applications can use to communicate with each other.
 
   Since we know we can access platform-level providers, we can use a platform level service that
   is shared across our Angular applications to communicate across our application's boundaries.
 
-  +makeTabs(
-    `cb-manual-bootstrap/ts/app/main.ts,
-     cb-manual-bootstrap/ts/app/app.component.ts,
-     cb-manual-bootstrap/ts/app/app2.component.ts,
-     cb-manual-bootstrap/ts/app/app3.component.ts,
-     cb-manual-bootstrap/ts/app/share.service.ts`,
-    '',
-    `app/main.ts,
-     app/app.component.ts,
-     app/app2.component.ts,
-     app/app3.component.ts,
-     app/shared.service.ts` )
++makeTabs(
+  `cb-manual-bootstrap/ts/app/main.3.ts,
+   cb-manual-bootstrap/ts/app/app.component.ts,
+   cb-manual-bootstrap/ts/app/hero-app.component.ts,
+   cb-manual-bootstrap/ts/app/tokens.ts,
+   cb-manual-bootstrap/ts/app/token.service.ts`,
+  '',
+  `app/main.ts,
+   app/app.component.ts,
+   app/hero-app.component.ts,
+   app/tokens.ts,
+   app/token.service.ts`)
+
+:marked
+  Similar to the previous example, we use the platform-level `TokenService` to request some data from an external resource.
+  We also use the `TokenService` to communicate and share data between our main application and
+  secondary applications.
 
 :marked
   [Back to top](#top)

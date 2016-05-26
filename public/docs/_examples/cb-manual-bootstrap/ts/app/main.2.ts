@@ -29,10 +29,6 @@ let tokenService: TokenService = platform.injector.get(TokenService);
 let appProviders: any[] = [];
 let appInjector: ReflectiveInjector;
 
-bootstrap(Hero2AppComponent, [
-  { provide: APP_TOKEN, useValue: '8F34217B-C4F6-48EF-A273-63467DBAD41E' }
-]);
-
 // Retrieve the application token
 tokenService.getAppToken()
   .do((token: string) => {
@@ -50,5 +46,4 @@ tokenService.getAppToken()
 
    // bootstrap applications with shared injector
    coreLoadAndBootstrap(appInjector, AppComponent);
-   coreLoadAndBootstrap(appInjector, HeroAppComponent);
   });

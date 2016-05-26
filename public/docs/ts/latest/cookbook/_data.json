@@ -32,7 +32,7 @@
   },
 
   "manual-bootstrap": {
-    "title": "Manual Bootstrapping",
+    "title": "Manual Bootstrap",
     "intro": "Alternate methods for application bootstrapping"
   },
 

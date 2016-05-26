@@ -6,8 +6,6 @@ import {TokenService} from './token.service';
 @Component({
   selector: 'my-app',
   template: `
-    <h1>Bootstrap Cookbook</h1>
-
     <h2>Main Application</h2>
 
     <div *ngIf="tokenService.acknowledged">Our hero has confirmed his token: {{ token }}</div>

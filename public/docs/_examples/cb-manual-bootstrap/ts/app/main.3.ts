@@ -9,7 +9,6 @@ import {HTTP_PROVIDERS} from '@angular/http';
 // Components
 import {AppComponent} from './app.component';
 import {HeroAppComponent} from './hero-app.component';
-import {Hero2AppComponent} from './hero2-app.component';
 
 // Services
 import {TokenService} from './token.service';
@@ -28,10 +27,6 @@ let tokenService: TokenService = platform.injector.get(TokenService);
 // Applicaton level providers
 let appProviders: any[] = [];
 let appInjector: ReflectiveInjector;
-
-bootstrap(Hero2AppComponent, [
-  { provide: APP_TOKEN, useValue: '8F34217B-C4F6-48EF-A273-63467DBAD41E' }
-]);
 
 // Retrieve the application token
 tokenService.getAppToken()
