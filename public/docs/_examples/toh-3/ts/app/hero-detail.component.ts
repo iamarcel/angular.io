@@ -15,24 +15,28 @@ import { Hero } from './hero';
   // #docregion template
   template: `
     <div *ngIf="hero">
-      <h2>{{hero.name}} details!</h2>
-      <div><label>id: </label>{{hero.id}}</div>
+      <h3>{{hero.name}} details!</h3>
+      <dl>
+        <dt>id:</dt>
+        <dd>{{hero.id}}</dd>
+      </dl>
       <div>
-        <label>name: </label>
-        <input [(ngModel)]="hero.name" placeholder="name"/>
+        <label>name: 
+          <input [(ngModel)]="hero.name" placeholder="name">
+        </label>
       </div>
     </div>
   `
   // #enddocregion template
-// #docregion v1  
+// #docregion v1
 })
 export class HeroDetailComponent {
 // #enddocregion v1
 // #docregion hero-input
-  @Input() 
-// #docregion hero  
+  @Input()
+// #docregion hero
   hero: Hero;
-// #enddocregion hero  
+// #enddocregion hero
 // #enddocregion hero-input
 // #docregion v1
 }
