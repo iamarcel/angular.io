@@ -1,3 +1,5 @@
+// #docplaster
+// #docregion
 export class Hero {
 
   constructor(
@@ -8,3 +10,4 @@ export class Hero {
   ) {  }
 
 }
+// #enddocregion

@@ -1,6 +1,5 @@
 // #docplaster
 // #docregion
-// #docregion first, final
 import { Component } from '@angular/core';
 
 import { Hero }    from './hero';
@@ -9,23 +8,19 @@ import { Hero }    from './hero';
   selector: 'hero-form-template',
   templateUrl: 'app/hero-form-template.component.html'
 })
+// #docregion class
 export class HeroFormTemplateComponent {
- 
+
   powers = ['Really Smart', 'Super Flexible',
             'Super Hot', 'Weather Changer'];
 
-  model = new Hero(18, 'Dr IQ', this.powers[0], 'Chuck Overstreet');
-
-  // #docregion submitted
+  model = new Hero(18, 'Dr IQ', this.powers[0], 
+                   'Chuck Overstreet');
+// #enddocregion class
   submitted = false;
 
   onSubmit() { this.submitted = true; }
-  // #enddocregion submitted
 
-  // #enddocregion final
-  // #enddocregion first
-
-  // #docregion final
   // Reset the form with a new hero AND restore 'pristine' class state
   // by toggling 'active' flag which causes the form
   // to be removed/re-added in a tick via NgIf
@@ -37,7 +32,7 @@ export class HeroFormTemplateComponent {
     this.active = false;
     setTimeout(()=> this.active=true, 0);
   }
-  // #enddocregion final
-  // #docregion first, final
+// #docregion class
 }
-// #enddocregion first, final
+// #enddocregion class
+// #enddocregion

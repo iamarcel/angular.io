@@ -1,4 +1,6 @@
-import { Component }         from '@angular/core';
+// #docplaster
+// #docregion
+import { Component } from '@angular/core';
 import { HeroFormTemplateComponent } from './hero-form-template.component'
 import { HeroFormModelBindingComponent } from './hero-form-model-binding.component'
 import { HeroFormModelComponent } from './hero-form-model.component'
@@ -15,3 +17,4 @@ import { HeroFormModelComponent } from './hero-form-model.component'
               HeroFormModelComponent]
 })
 export class AppComponent { }
+// #enddocregion
