@@ -26,6 +26,10 @@ export class HeroFormModelBindingComponent {
 
 // #docregion class
   constructor(private fb: FormBuilder) {
+    this.buildForm();
+  }
+
+  buildForm() {
     this.nameControl = new Control("", 
         Validators.compose([Validators.required,
                             Validators.minLength(4),
@@ -37,7 +41,7 @@ export class HeroFormModelBindingComponent {
           'name': this.nameControl,
           'alterEgo': [""],
           'power': this.powerControl
-    })
+    });
   }
   // #enddocregion class
 
@@ -56,6 +60,7 @@ export class HeroFormModelBindingComponent {
 
   newHero() {
     this.model = new Hero(42, '', '');
+    this.buildForm();
     this.active = false;
     setTimeout(()=> this.active=true, 0);
     console.log(this.heroForm);

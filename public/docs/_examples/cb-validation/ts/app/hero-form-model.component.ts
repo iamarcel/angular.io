@@ -20,6 +20,7 @@ export class HeroFormModelComponent {
 
   model = new Hero(18, 'Dr IQ', this.powers[0], 
                     'Chuck Overstreet');
+
 // #enddocregion class
   submitted = false;
 // #docregion class
@@ -94,6 +95,7 @@ export class HeroFormModelComponent {
   newHero() {
     this.model = new Hero(42, '', '');
     this.buildForm();
+    this.onValueChanged('');
     this.active = false;
     setTimeout(() => this.active = true, 0);
   }
