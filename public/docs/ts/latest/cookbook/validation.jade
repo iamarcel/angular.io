@@ -48,16 +48,20 @@ include ../_util-fns
    We use the local variable to determine whether to display a validation message.
       - We use `*ngIf` to check whether the control has errors and whether it is `dirty` or `touched` before
       displaying the validation block `div`.
-      Adding the check for `dirty` or `touched` prevents display of errors before the user has a chance to edit the
-      value. This is most useful when adding new data, such as a new hero.
       - We then have a separate `div` for each possible validation error. In our example, we defined validation for
       `required`, `minlength`, and `maxlength`, so we add one `div` for each one. Each `div` is marked with `[hidden]`
       so the validation message is hidden unless the control has the specified error.
 
    Repeat for each data entry control on the form.
+.l-sub-section
+  :marked
+    Adding the check for `dirty` or `touched` prevents display of errors before the user has a chance to edit the
+    value. This is most useful when adding new data, such as a new hero.
 
-   The component class then manages the model used in the data binding. And provides any other code required
-   by the view.
+    Learn about `dirty` and `touched` in the [Forms](../guide/forms.html) chapter.
+:marked
+  The component class then manages the model used in the data binding. And provides any other code required
+  by the view.
 
 +makeExample('cb-validation/ts/app/hero-form-template.component.ts','class','app/hero-form-template.component.ts')
 
@@ -82,7 +86,7 @@ include ../_util-fns
 
    Using the model-driven approach to form validation, the validation rules are specified in the model as defined in the
    component class. Defining the validation in the class instead of the template gives you more control. You
-   can adjust the validation based on the application state or user and you can unit test the validation rules.
+   can adjust the validation based on the application state or user.
    Your code then becomes the source of truth for your validation.
 
    By combining a model-driven approach with data binding, you can get the best of the model-driven approach, but
@@ -99,11 +103,11 @@ include ../_util-fns
    In the component class, we define the form and the controls on the form:
       - Declare a property for the form typed as a `ControlGroup`.
       - Declare a property for each control on the form typed as `Control`. You only need to define a property for a control
-      if the control has validation rules. Notice that in our example, the alter ego is not validated so it is not declared here.
+      if the control has validation rules. Notice that in our example, the alter ego has no validation rules so it is not declared here.
       - Add a constructor for the class and use dependency injection to inject in the `FormBuilder` service. We use
       that service to build the form.
       - Build a method to create the form. We name this method `buildForm` in our example.
-      The form is created in a method instead of directly within the constructor so it can be
+      The form is created in a method so it can be
       called again to reset the form and its validation when adding a new hero.
       - In the `buildForm` method, create an instance of each control, defining the appropriate validation rules.
         - The first argument of the `Control` constructor is the default value. We don't need to set a default here because
@@ -114,9 +118,12 @@ include ../_util-fns
         - The optional third argument of the `Control` constructor (not shown) defines any asynchronous validation rules.
       - Group the controls into a form group using the `FormBuilder` instance. Here we also add the `alterEgo` so the form
       definition is complete.
-      - We call this `buildForm` method from the constructor. But in many applications, you may want to call `buildForm`
-      from somewhere else such as the `ngInit` lifecycle hook.
+      - We call this `buildForm` method from the `ngOnInit` lifecycle hook method.
 
+.l-sub-section
+  :marked
+    Learn more about `ngOnInit` in the [LifeCycle Hooks](../guide/lifecycle-hooks.html) chapter.
+:marked
    We'll use the class form and control properties in the template. 
 
 +makeExample('cb-validation/ts/app/hero-form-model-binding.component.html','name-with-error-msg','app/hero-form-model-binding.component.html')
@@ -140,7 +147,7 @@ include ../_util-fns
 
    Repeat for each data entry control on the form.
 
-   Use this technique when you want better control over the validation and the ability to unit test the validation rules,
+   Use this technique when you want better control over the validation,
    yet still have the simplicity resulting from data binding and validation messages in the template.
 
    Here's the complete solution for the model-driven with data binding approach:
@@ -162,7 +169,7 @@ include ../_util-fns
    Using the model-driven approach to form validation, the validation rules and validation messages
    are specified in the model defined in the
    component class. Specifying the validation in the class instead of the template gives you more control. You
-   can adjust the validation rules or messages based on the application state or user and you can unit test the validation.
+   can adjust the validation rules or messages based on the application state or user.
    Your code then becomes the source of truth for your validation.
 
    Going 100% model driven also involves removing the data binding and validation messages from the template.
@@ -194,19 +201,23 @@ include ../_util-fns
         - The `formError` collection is initialized using the control
       name as the key and the current validation message as the value. When the form is first displayed, no validation messages
       should appear, so the current validation message for each control is empty.
-        - The `_validationMessages` collection is
+        - The `validationMessages` collection is
       initialized using the control name as the key and the set of possible validation messages as the value. For this example,
       we hard-code in the set of validation messages. But you can retrieve these messages from an external file or
       from a database table. Alternatively, you could build a service that retrieved and managed the set of validation messsages.
       - Build a method to create the form. We name this method `buildForm` in our example.
-      The form is created in a method instead of directly within the constructor so it can be
+      The form is created in a method so it can be
       called again to reset the form with different default values when adding a new hero.
       - In the `buildForm` method, group the controls into a form using the `FormBuilder` instance. Here we define each control's name, default value, and 
       validation rules.
-      - We call this `buildForm` method from the constructor. But in many applications, you may need to call `buildForm`
+      - We call this `buildForm` method from the `ngOnInit` lifecycle hook method. But in many applications, you may need to call `buildForm`
       from somewhere else. For example, if the default values are coming from an http request, call the `buildForm` method
       after the data is retrieved.
 
+.l-sub-section
+  :marked
+    Learn more about `ngOnInit` in the [LifeCycle Hooks](../guide/lifecycle-hooks.html) chapter.
+:marked
    There is one more important thing that we need to do. We need to watch for any changes that the user makes and adjust the
    validation messages appropriately. For example, if the user enters a single character into the name field, we need to
    change the validation message from `Name is required` to `Name must be at least 4 characters long`. And when the user
@@ -245,8 +256,7 @@ include ../_util-fns
    The template then has no validation logic. If there is a validation message in the collection it displays it, if not
    it doesn't. All of the logic is in the component class.
 
-   Use this technique when you want better control over the validation and the ability to unit test the validation rules,
-   and validation messages.
+   Use this technique when you want better control over the validation rules and messsages.
 
    Here's the complete solution for the model-driven approach:
 

@@ -1,6 +1,6 @@
 // #docplaster
 // #docregion
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ControlGroup, FormBuilder, Validators } from '@angular/common';
 
 import { Hero }    from './hero';
@@ -10,10 +10,10 @@ import { Hero }    from './hero';
   templateUrl: 'app/hero-form-model.component.html'
 })
 // #docregion class
-export class HeroFormModelComponent {
+export class HeroFormModelComponent implements OnInit {
   heroForm: ControlGroup;
   formError: { [id: string]: string };
-  private _validationMessages: { [id: string]: { [id: string]: string } };
+  private validationMessages: { [id: string]: { [id: string]: string } };
     
   powers = ['Really Smart', 'Super Flexible',
     'Super Hot', 'Weather Changer'];
@@ -30,7 +30,7 @@ export class HeroFormModelComponent {
       'alterEgo': '',
       'power': ''
     };
-    this._validationMessages = {
+    this.validationMessages = {
       'name': {
         'required': 'Name is required.',
         'minlength': 'Name must be at least 4 characters long.',
@@ -40,11 +40,13 @@ export class HeroFormModelComponent {
         'required': 'Power is required.'
       }
     };
-       
+  }
+
+  ngOnInit(): void {     
     this.buildForm();
   }
 
-  buildForm() {
+  buildForm(): void {
     this.heroForm = this.fb.group({
       'name': [this.model.name, 
                Validators.compose([Validators.required,
@@ -67,7 +69,7 @@ export class HeroFormModelComponent {
               if (hasError) {
                   for (let key in this.heroForm.controls[field].errors) {
                       if (this.heroForm.controls[field].errors.hasOwnProperty(key)) {
-                          this.formError[field] += this._validationMessages[field][key] + ' ';
+                          this.formError[field] += this.validationMessages[field][key] + ' ';
                       }
                   }
               }
@@ -81,8 +83,8 @@ export class HeroFormModelComponent {
   }
   
   isRequired(controlName: string): boolean {
-      if (Object.keys(this._validationMessages).includes(controlName)) {
-        return Object.keys(this._validationMessages[controlName]).includes('required');}
+      if (Object.keys(this.validationMessages).includes(controlName)) {
+        return Object.keys(this.validationMessages[controlName]).includes('required');}
       return false;
   }
   // Reset the form with a new hero AND restore 'pristine' class state

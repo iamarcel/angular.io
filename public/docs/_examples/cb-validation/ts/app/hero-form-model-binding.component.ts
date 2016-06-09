@@ -1,6 +1,6 @@
 // #docplaster
 // #docregion
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ControlGroup, Control, FormBuilder, Validators }    from '@angular/common';
 
 import { Hero }    from './hero';
@@ -10,7 +10,7 @@ import { Hero }    from './hero';
   templateUrl: 'app/hero-form-model-binding.component.html'
 })
 // #docregion class
-export class HeroFormModelBindingComponent {
+export class HeroFormModelBindingComponent implements OnInit {
   heroForm: ControlGroup;
   nameControl: Control;
   powerControl: Control;
@@ -25,7 +25,9 @@ export class HeroFormModelBindingComponent {
   submitted = false;
 
 // #docregion class
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {  }
+
+  ngOnInit(): void {     
     this.buildForm();
   }
 
