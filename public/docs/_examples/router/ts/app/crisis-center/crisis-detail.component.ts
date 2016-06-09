@@ -1,10 +1,10 @@
-// #docplaster
-// #docregion
-import { Component } from '@angular/core';
-import { CanDeactivate, OnActivate, Router, RouteSegment } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute }       from '@angular/router';
+import { Observable }                   from 'rxjs/Observable';
+import 'rxjs/add/observable/fromPromise';
 
 import { Crisis, CrisisService } from './crisis.service';
-import { DialogService } from '../dialog.service';
+import { DialogService }         from '../dialog.service';
 
 @Component({
   template: `
@@ -25,39 +25,37 @@ import { DialogService } from '../dialog.service';
   styles: ['input {width: 20em}']
 })
 
-export class CrisisDetailComponent implements OnActivate, CanDeactivate {
+export class CrisisDetailComponent implements OnInit, OnDestroy {
   crisis: Crisis;
   editName: string;
-  private curSegment: RouteSegment;
+  private sub: any;
 
   constructor(
     private service: CrisisService,
     private router: Router,
-    private dialog: DialogService
+    private route: ActivatedRoute,
+    private dialogService: DialogService
     ) { }
 
-  routerOnActivate(curr: RouteSegment) {
-    this.curSegment = curr;
-
-    let id = +curr.getParam('id');
-    this.service.getCrisis(id).then(crisis => {
-      if (crisis) {
-        this.editName = crisis.name;
-        this.crisis = crisis;
-      } else { // id not found
-        this.gotoCrises();
-      }
-    });
+  ngOnInit() {
+    this.sub = this.route
+      .params
+      .subscribe(params => {
+        let id = +params['id'];
+        this.service.getCrisis(id)
+          .then(crisis => {
+            if (crisis) {
+              this.editName = crisis.name;
+              this.crisis = crisis;
+            } else { // id not found
+              this.gotoCrises();
+            }
+          });
+      });
   }
 
-  routerCanDeactivate(): any {
-    // Allow synchronous navigation (`true`) if no crisis or the crisis is unchanged.
-    if (!this.crisis || this.crisis.name === this.editName) {
-      return true;
-    }
-    // Otherwise ask the user with the dialog service and return its
-    // promise which resolves to true or false when the user decides
-    return this.dialog.confirm('Discard changes?');
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
   cancel() {
@@ -70,19 +68,23 @@ export class CrisisDetailComponent implements OnActivate, CanDeactivate {
     this.gotoCrises();
   }
 
-  // #docregion gotoCrises
   gotoCrises() {
     let crisisId = this.crisis ? this.crisis.id : null;
     // Pass along the hero id if available
     // so that the CrisisListComponent can select that hero.
     // Add a totally useless `foo` parameter for kicks.
-    // #docregion gotoCrises-navigate
-    // Absolute link
-    this.router.navigate(['/crisis-center', {id: crisisId, foo: 'foo'}]);
-
-    // Relative link
-    // this.router.navigate(['../', {id: crisisId, foo: 'foo'}], this.curSegment);
-    // #enddocregion gotoCrises-navigate
+    this.router.navigate(['/crisis-center', { id: crisisId, foo: 'foo' }], { relativeTo: this.route });
   }
-  // #enddocregion gotoCrises
+
+  canDeactivate(): Observable<boolean> | boolean {
+    // Allow synchronous navigation (`true`) if no crisis or the crisis is unchanged
+    if (!this.crisis || this.crisis.name === this.editName) {
+      return true;
+    }
+    // Otherwise ask the user with the dialog service and return its
+    // promise which resolves to true or false when the user decides
+    let p = this.dialogService.confirm('Discard changes?');
+    let o = Observable.fromPromise(p);
+    return o;
+  }
 }

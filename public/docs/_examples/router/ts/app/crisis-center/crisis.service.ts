@@ -1,5 +1,4 @@
-// #docplaster
-
+/// TODO: Clean this up
 export class Crisis {
   constructor(public id: number, public name: string) { }
 }
@@ -13,7 +12,8 @@ const CRISES = [
 
 let crisesPromise = Promise.resolve(CRISES);
 
-// #docregion
+///////////
+
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -28,8 +28,6 @@ export class CrisisService {
       .then(crises => crises.filter(c => c.id === +id)[0]);
   }
 
-// #enddocregion
-
   addCrisis(name: string) {
     name = name.trim();
     if (name) {
@@ -37,6 +35,4 @@ export class CrisisService {
       crisesPromise.then(crises => crises.push(crisis));
     }
   }
-// #docregion
 }
-// #enddocregion

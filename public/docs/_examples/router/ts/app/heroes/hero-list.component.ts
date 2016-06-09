@@ -1,15 +1,9 @@
-// #docplaster
-// #docregion
-// TODO SOMEDAY: Feature Componetized like CrisisCenter
-import { Component }          from '@angular/core';
-// #docregion import-router
-import { OnActivate, Router, RouteSegment, RouteTree } from '@angular/router';
-// #enddocregion import-router
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
-import { Hero, HeroService }   from './hero.service';
+import { Hero, HeroService}   from './hero.service';
 
 @Component({
-  // #docregion template
   template: `
     <h2>HEROES</h2>
     <ul class="items">
@@ -20,33 +14,44 @@ import { Hero, HeroService }   from './hero.service';
       </li>
     </ul>
   `
-  // #enddocregion template
 })
-export class HeroListComponent implements OnActivate {
+export class HeroListComponent implements OnInit, OnDestroy {
   heroes: Hero[];
+  sub: any;
 
-  // #docregion ctor
   private selectedId: number;
 
   constructor(
     private service: HeroService,
-    private router: Router) {  }
-  // #enddocregion ctor
+    private router: Router,
+    private route: ActivatedRoute) {}
 
-  routerOnActivate(curr: RouteSegment, prev?: RouteSegment, currTree?: RouteTree, prevTree?: RouteTree): void {
-    this.selectedId = +curr.getParam('id');
-    this.service.getHeroes().then(heroes => this.heroes = heroes);
+  ngOnInit() {
+    this.sub = this.router
+      .routerState
+      .queryParams
+      .subscribe(params => {
+        this.selectedId = +params['id'];
+        this.service.getHeroes()
+          .then(heroes => this.heroes = heroes);
+      });
   }
 
-  // #docregion isSelected
-  isSelected(hero: Hero) { return hero.id === this.selectedId; }
-  // #enddocregion isSelected
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 
-  // #docregion select
+  isSelected(hero: Hero) { return hero.id === this.selectedId; }
+
   onSelect(hero: Hero) {
     this.router.navigate(['/hero', hero.id]);
   }
-  // #enddocregion select
 
 }
-// #enddocregion
+
+
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/
