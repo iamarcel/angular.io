@@ -6,8 +6,8 @@
     <form [ngFormModel]="heroForm" *ngIf="active" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <!-- #docregion name-with-error-msg -->
-        <label for="name">Name</label>
-        <input type="text" class="form-control" 
+        <label for="name3">Name</label>
+        <input type="text" id="name3" class="form-control" 
                ngControl="name"
                [ngClass]="{'required': isRequired('name')}">
         <div *ngIf="formError.name" class="alert alert-danger">
@@ -17,15 +17,15 @@
       </div>
 
       <div class="form-group">
-        <label for="alterEgo">Alter Ego</label>
-        <input type="text" class="form-control"
+        <label for="alterEgo3">Alter Ego</label>
+        <input type="text" id="alterEgo3" class="form-control"
             ngControl="alterEgo"
             [ngClass]="{'required': isRequired('alterEgo')}" >
       </div>
 
       <div class="form-group">
-        <label for="power">Hero Power</label>
-        <select class="form-control"
+        <label for="power3">Hero Power</label>
+        <select id="power3" class="form-control"
             ngControl="power"
             [ngClass]="{'required': isRequired('power')}" >
           <option *ngFor="let p of powers" [value]="p">{{p}}</option>

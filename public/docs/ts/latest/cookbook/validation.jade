@@ -88,6 +88,11 @@ include ../_util-fns
    By combining a model-driven approach with data binding, you can get the best of the model-driven approach, but
    still have some of the simplicity of the template-driven approach.
 
+.alert.is-important
+  :marked
+    When moving the validation attributes out of the HTML, we are no longer aria ready. Work is being done to
+    address this. 
+
 +makeExample('cb-validation/ts/app/hero-form-model-binding.component.ts','class','app/hero-form-model-binding.component.ts')
 
 :marked
@@ -164,6 +169,11 @@ include ../_util-fns
    This means that we need to set the default value for each control, and we need to add code
    that tracks the user's changes so we can hide/show validation messages as needed.
 
+.alert.is-important
+  :marked
+    When moving the validation attributes out of the HTML, we are no longer aria ready. Work is being done to
+    address this. 
+    
 +makeExample('cb-validation/ts/app/hero-form-model.component.ts','class','app/hero-form-model.component.ts')
 
 :marked
