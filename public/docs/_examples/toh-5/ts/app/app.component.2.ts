@@ -2,11 +2,10 @@
 // #docregion
 import { Component } from '@angular/core';
 // #docregion import-router
-import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
+import { ROUTER_DIRECTIVES } from '@angular/router';
 // #enddocregion import-router
 
 import { HeroService }     from './hero.service';
-import { HeroesComponent } from './heroes.component';
 
 @Component({
   selector: 'my-app',
@@ -20,20 +19,10 @@ import { HeroesComponent } from './heroes.component';
   // #docregion directives-and-providers
   directives: [ROUTER_DIRECTIVES],
   providers: [
-    ROUTER_PROVIDERS,
     HeroService
   ]
   // #enddocregion directives-and-providers
 })
-// #docregion route-config
-@RouteConfig([
-  {
-    path: '/heroes',
-    name: 'Heroes',
-    component: HeroesComponent
-  }
-])
-// #enddocregion route-config
 export class AppComponent {
   title = 'Tour of Heroes';
 }
