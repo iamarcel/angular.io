@@ -242,7 +242,7 @@ function runE2eTsTests(appDir, outputFile) {
   }
 
   var appBuildSpawnInfo = spawnExt('npm', ['run', exampleConfig.build], { cwd: appDir });
-  var appRunSpawnInfo = spawnExt('npm', ['run', exampleConfig.run, '--', '-s'], { cwd: appDir });
+  var appRunSpawnInfo = spawnExt('npm', ['run', exampleConfig.run], { cwd: appDir });
 
   return runProtractor(appBuildSpawnInfo.promise, appDir, appRunSpawnInfo, outputFile);
 }
